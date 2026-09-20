@@ -1,0 +1,4 @@
+interface:
+  display_name: "STEM Study Vault"
+  short_description: "Build a personal STEM learning vault from course materials"
+  default_prompt: "Use $stem-study-vault to turn my local course materials into an Obsidian learning vault adapted to my background and goals."
