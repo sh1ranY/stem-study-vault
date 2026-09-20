@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+.venv/
+.DS_Store
+.obsidian/
+.pytest_cache/
+dist/
+.env
+.env.*
