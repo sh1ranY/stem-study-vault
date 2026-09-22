@@ -2,9 +2,17 @@
 
 **Turn local lectures, exercise sheets and past papers into a personal Obsidian learning vault.**
 
-A Codex skill for STEM students. It adapts explanations to your background, connects concepts through prerequisites, explains derivations, places independent practice after the relevant teaching, and keeps source references and personal notes intact.
+A Codex skill for STEM and quantitative-course students. Its default output is a primary self-study text, preserving substantive source content while explaining concepts, reasons, connections and derivations in connected prose. It places independent practice after the relevant teaching and preserves source references and personal notes.
 
 [中文说明](README.md) · [Original example vault](examples/demo-vault/Start.md) · [Validation and limits](VALIDATION.md)
+
+## Teaching-quality revision — 2026-09-22
+
+The revision addresses omissions and overly compressed, fragmented teaching reported during a whole-course trial. It adds item-level source accounting, source-to-lesson checks of actual explanations, explicit handling of conditions/visuals/distinct examples/subparts, and detailed batching for large courses. A topic heading or source link does not establish that the subject was taught.
+
+The bundled [worked teaching standard](skills/stem-study-vault/references/teaching-standard.md) demonstrates justified transitions, model interpretation and connected prose through an original consumer-choice lesson. Its Chinese language and economics topic are illustrative; the skill should apply those teaching decisions to the user's subject and language. There is no fixed word or question quota. See the [teaching rubric](tests/teaching-rubric.md) for output-level evaluation.
+
+An [independent forward-test report](tests/results/2026-09-22-forward-test.md) records the actual output from a three-lecture original source pack, including a post-generation editorial correction and the limits of this small trial.
 
 ## Install and use
 
