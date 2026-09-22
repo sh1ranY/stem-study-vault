@@ -8,11 +8,11 @@ Offer sensible defaults instead of requiring a long questionnaire:
 
 | Choice | Default when unspecified |
 | --- | --- |
-| Goal | Systematic understanding and independent problem solving |
+| Goal | A primary learning text supporting systematic understanding and independent problem solving |
 | Language | User's conversation language; retain useful source terminology |
 | Prerequisites | Brief just-in-time refreshers; adapt after the first attempt |
 | Organization | Course entry → lessons → topic revision and practice → sources |
-| Teaching depth | Explain the reasoning needed to reproduce and adapt a method |
+| Teaching depth | Preserve the substantive supplied course content; explain enough to reproduce and adapt its methods |
 | Personal notes | Preserve existing user-authored material and its dependencies |
 | Exams | Ask which, if any, should remain unseen before distributing their questions |
 

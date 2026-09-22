@@ -1,58 +1,77 @@
-# Teaching for understanding and transfer
+# Write a primary learning text
 
-Organize by concept dependencies, retaining a visible mapping to lectures. A lecture index is not automatically a calendar week. Keep the first-learning path readable in sequence, with topic pages for later connections and method selection.
+For a new course or a major teaching rewrite, read this reference before drafting. Read [teaching-standard.md](teaching-standard.md) once for a concrete depth/style example. Its economics topic and Chinese language are illustrative; transfer the explanatory decisions to the learner's subject and preferred language.
 
-## A complete learning unit
+## Preserve difficulty; supply the path through it
 
-Use the following sequence where it helps the subject; combine short elements naturally:
+The default output is a text the learner can study from, not a digest of what the course mentions. Preserve substantive source content using the coverage procedure in [sources-and-questions.md](sources-and-questions.md). Accessibility comes from supplying explanations and prerequisites, not from deleting the course's more demanding ideas, conditions, derivations or examples.
 
-1. A concrete question or situation, and why the concept helps.
-2. An intuitive explanation connected to the rigorous definition.
-3. Symbols, dimensions, assumptions, valid domain and sign conventions.
-4. The reasoning/derivation, explaining each non-obvious transition.
-5. A worked example showing how to identify and choose the method.
-6. An independent problem after its prerequisites, with separate folded hint and solution.
-7. A common error, a transfer question and a short check of understanding.
+Distinguish three kinds of apparent coverage:
 
-Use coherent explanatory paragraphs. Do not replace teaching with lists of facts, literal slide translations or excessive conversational filler. A useful analogy states its correspondence and where it stops applying. Refresh a rusty prerequisite at the point of use, then return to the actual problem.
+- **Named:** the topic appears as a heading or brief definition.
+- **Stated:** a formula/result and perhaps its meaning are given.
+- **Taught:** the learner can follow why it arises, when it applies and how to use it at the level required by the source material.
 
-## Equations and derivations
+Only the third meets the primary-text standard. A correct formula followed by a source link is not a substitute for the intervening teaching. Pages assigned to later batches remain pending; they do not become optional just because the current batch is finished.
 
-- Define quantities before use, including whether they are scalars, vectors, samples or continuous functions. Explain units and normalization conventions.
-- State assumptions before the result: initial conditions, linearity, domain, independence, approximation, convergence or operating region as applicable.
-- Show why a transformation is allowed. Check denominators, endpoints, exceptional cases and whether an operation loses solutions.
-- Distinguish exact equalities, approximations and empirical rules. A course convention is not necessarily universal.
-- In worked answers, verify through substitution, differentiation, dimensional analysis, limiting behavior, a second method or appropriate numerical computation. Pick checks that could catch the actual error.
-- Use a diagram when geometry, a circuit, a waveform or a dependency is hard to understand in prose. Check labels, axes, units and correspondence with the equations. Visually inspect source figures before recreating them; do not invent missing circuit connections or graph values.
+## Explain in connected paragraphs
 
-The same principle extends beyond calculus: algorithms need preconditions and invariants, proofs need justified implications, experiments need measurement assumptions and uncertainty, and statistical conclusions need model assumptions.
+Use a textbook voice: precise, readable sentences that develop one idea and lead into the next. A paragraph should add a useful meaning, reason, distinction, condition or consequence. Prefer explicit connections such as “this quantity is held fixed so that…” and “we can make this substitution because…” to a row of disconnected conclusions.
 
-## Practice design
+Introduce a concept through the problem it resolves; explain its meaning in the current setting; connect it to the mathematical formulation; then show what it lets the learner infer. Do not force these functions into four little headings for every concept. Use headings at natural conceptual boundaries and lists/tables where the information is actually parallel. Keep derivation and comparison tables when useful, rather than imposing a ban on all lists.
 
-Prefer supplied questions that match the just-taught prerequisites. Include subparts; do not count answer continuation pages as new questions. Put repeated same-method questions in optional reinforcement, multi-topic problems after their prerequisites, and unseen mock exams in a separate route. Never enforce an arbitrary number of questions per concept.
+For contrastive concepts, keep the comparison dimension explicit: what is chosen, what is fixed, what is optimized, and what question each model answers. Saying “A fixes income, B fixes utility” can summarize an explanation; it cannot replace the explanation of why the two experiments differ.
 
-When supplied material has a genuine gap, author a clearly labeled exercise. A worked example reused as a test is seen practice, not unseen assessment. Provide sufficient data so exercises can be attempted without hunting through unrelated pages.
+A short recap belongs after the developed account. Do not compress an entire lecture into “key points → one worked example → one self-test” when its sources contain multiple distinct teaching units. Do not pad with repeated reassurance, rhetorical questions, unrelated analogies or statements of importance. Useful density means retaining distinct explanatory content; neither word count nor the absence of paragraph breaks measures it.
 
-Use this Obsidian pattern, including `>` on every line inside the callout:
+## Make a derivation reproducible
+
+Before manipulating symbols, establish the question, variables, givens, assumptions and governing definition/model. For every non-obvious transition, explain both the mathematical permission and its purpose in the solution.
+
+For example, if a calculation suddenly uses a tangency condition, teach where it comes from and when an interior tangency is appropriate. If it then combines that condition with a constraint, explain why both equations are needed: one chooses the best point along a feasible set, the other locates that set. A passage saying “minimize expenditure, hence y = 2x” omits the central reasoning.
+
+Match mathematical detail to the learner's stated foundation. Refresh an unfamiliar derivative, integral, optimization condition or algebraic manipulation when it is needed, using a small check or explanation, then return to the actual problem. Routine arithmetic need not receive a paragraph per operation. Do not silently presume an earlier lesson teaches a prerequisite: link to the actual explanation, and briefly reactivate the part used now. An absent, unread or merely planned prerequisite needs an explanation here or an honest dependency note.
+
+Include exceptional cases that matter in the source: a denominator that can vanish, a corner solution, an initial condition, an approximation region, a convergence requirement or a sign convention. A short independent example cannot stand in for a distinct supplied example that exists to teach another case.
+
+Use inline `$...$` and display `$$...$$` for mathematics, not backtick code spans or plain-text chains of subscripts. Separate a displayed equation from the paragraph explaining it. Define notation and physical units when relevant; economic quantities and dimensionless indices need their interpretation rather than invented physical units. A parsing check is separate from a mathematical check.
+
+## Use examples to teach decisions
+
+Keep each substantive supplied example and all of its requested subparts traceable. An example should let the reader see how its givens suggest a model, why that method is suitable, how the result follows and what the answer means. Interleave working with explanation; do not place all the reasoning in an optional folded solution if it is required before the first independent attempt.
+
+When a problem compares several states, name the states before calculating their differences. Record what changes and what stays fixed at each transition. In a diagram, use consistent point labels, axes and constraints so “from the first point to the compensated point” has an unambiguous meaning. Interpret the sign and units of the result; where two pieces should add to a total, check that identity and its interpretation.
+
+Visually inspect the source's essential figures/tables. Teach the relationships they contain; retain or faithfully redraw them when necessary. For a new explanatory figure, state its model and verify coordinates, labels, signs and correspondence with the text. A decorative image does not replace a needed geometry, waveform, circuit or algorithm trace.
+
+Check answers with a method that could expose a mistake: substitution into the original relation, dimensions, limiting cases, a second derivation or numerical evaluation. Distinguish official final answers from authored expanded working, and flag contradictions rather than silently repairing source data.
+
+## Practice after teaching its prerequisites
+
+Allocate supplied questions by prerequisite readiness and training purpose, not a fixed count per lesson. Keep distinct methods, conditions and subparts. Repetitive same-method items can be optional reinforcement; they still need a recorded destination. Multi-topic problems belong after their dependencies. Respect any reserved unseen papers.
+
+A check that asks only for substitution into the immediately preceding example is weak evidence of understanding. Where appropriate, use an additional task that changes a condition, requires selecting a method, interpreting a result or explaining why an approach fails. Clearly label authored questions. Do not manufacture filler when supplied questions already provide that practice.
+
+Provide enough givens and diagrams to attempt the question. Keep hints and full solutions separately folded; their titles must not reveal answers. Do not leak a reserved or self-test answer through a nearby summary, caption, alias or uncollapsed numerical check.
 
 ```markdown
 ### Practice — Q-S01-2
 
-Question and givens. Source and original/adapted/authored status.
+Question, givens and source/original/adapted/authored identity.
 
 > [!hint]- Hint
-> The first useful step; no answer in the title.
+> A first useful step, without giving the result.
 
-> [!success]- Solution — independently derived
-> Explain the method, steps, result and a check.
+> [!success]- Solution — authored working
+> Explain method selection, justified steps, interpretation and a check.
 >
 > $$\text{equation here}$$
 ```
 
-Do not leak answers in preceding headings, summaries, figure filenames/captions, aliases or hints. If original scans contain printed answers, use a question-only crop or transcribe the problem accurately and label it. Preserve the original file separately. “Official answer” may describe the final result while the expanded working remains authored; say so explicitly.
+## Review the actual teaching before declaring the batch complete
 
-## Learning evidence and review
+Read the source alongside the lesson, then attempt a relevant supplied question using the lesson alone. Look for missing concepts/branches, unexplained transitions, undefined notation and reliance on absent diagrams or source pages. A successful familiar worked example does not test all the source's other cases.
 
-A useful self-check asks the student to explain why the method applies, solve a modest variation and identify a situation where the method fails. Record reported attempts in their own review log only within the requested scope. Distinguish unassessed, needs review and demonstrated on a specific task; never invent scores or infer mastery from reading.
+Explain the lesson's conceptual connections in ordinary language. If its paragraphs can be replaced by a short list without losing any reasoning, inspect whether it is still only a recap. Repair the specific missing substance instead of inflating every section to a word quota.
 
-Build revision pages around choosing between methods, contrasting easily confused ideas and connecting topics. Recommend the next exercise based on observed errors when available. Plan revisits flexibly; no fixed spacing schedule or promised grade is required.
+Keep content-review status distinct from student proficiency. Record only actual attempts or reported feedback as learning evidence. Generating all files, passing link checks, rendering equations and having a populated audit table do not establish that the content was fully taught or that the learner has mastered it.
