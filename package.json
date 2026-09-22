@@ -1,0 +1,12 @@
+{
+  "name": "stem-study-vault-checks",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:math": "node --test tests/math-check.test.mjs",
+    "check:math": "node skills/stem-study-vault/scripts/katex_check.mjs examples/demo-vault"
+  },
+  "dependencies": {
+    "katex": "0.17.0"
+  }
+}

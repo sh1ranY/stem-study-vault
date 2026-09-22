@@ -65,3 +65,7 @@ python3 skills/stem-study-vault/scripts/vault_tools.py check --vault examples/de
 Without extraction dependencies, PDF/PPTX integration tests are skipped. See [helper documentation](skills/stem-study-vault/references/tools.md) and [behavioral evaluation scenarios](tests/behavioral-evaluation.md). Report reproducible learning problems using minimal original or redistributable examples; exclude private course files from issues and pull requests.
 
 License: [MIT](LICENSE).
+
+## Optional formula checker / 可选公式检查
+
+A read-only KaTeX syntax checker is now included. See [usage and limitations](skills/stem-study-vault/references/tools.md#optional-formula-syntax-check). Run `npm ci`, `npm run check:math` and `npm run test:math` from this repository.

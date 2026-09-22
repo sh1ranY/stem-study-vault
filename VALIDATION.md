@@ -31,3 +31,7 @@ python3 skills/stem-study-vault/scripts/vault_tools.py check --vault examples/de
 ```
 
 If PDF/PPTX dependencies are missing, their integration tests are skipped. Inspect test output rather than treating a skipped check as a pass. Opening the demo in Obsidian adds local `.obsidian` settings, which are intentionally excluded from the release and link scan.
+
+## Optional math checker addition — 22 September 2026
+
+Four Node.js behavioral tests passed: valid math with code exclusion, malformed syntax/unmatched delimiters, excluded directories, and bare commands. The bundled demo produced 10 checked files, 99 formula spans and no syntax errors under KaTeX 0.17.0. The optional checker is now bundled; the earlier development-only limitation above describes the initial release. Mathematical truth and Obsidian rendering remain outside this syntax check.

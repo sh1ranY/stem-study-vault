@@ -104,3 +104,7 @@ python3 skills/stem-study-vault/scripts/vault_tools.py check --vault examples/de
 欢迎提交能复现的使用反馈：输入材料的类型、预期学习任务、实际卡住的步骤，以及脱敏后的最小示例。改动脚本时运行相关测试；改动教学流程时用 [行为评估场景](tests/behavioral-evaluation.md) 检查实际输出。请勿把私人课程资料直接放进 issue 或 PR。
 
 许可证：[MIT](LICENSE)。
+
+## Optional formula checker / 可选公式检查
+
+A read-only KaTeX syntax checker is now included. See [usage and limitations](skills/stem-study-vault/references/tools.md#optional-formula-syntax-check). Run `npm ci`, `npm run check:math` and `npm run test:math` from this repository.
