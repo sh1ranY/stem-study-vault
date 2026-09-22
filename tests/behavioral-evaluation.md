@@ -1,6 +1,12 @@
 # Behavioral evaluation scenarios
 
-These are manual acceptance scenarios for a Codex session with the skill installed. They are not automated evaluation results. Use a temporary folder and original/redistributable materials. Assess actual output; a matching phrase in SKILL.md is not enough.
+These are manual acceptance scenarios for a Codex session with the skill available. Scenarios are not results; executed checks are recorded separately in VALIDATION.md and linked reports. Use a temporary folder and original/redistributable materials. Assess actual output; a matching phrase in SKILL.md is not enough.
+
+## Whole-course teaching evaluation
+
+Use the original three-lecture pack in `fixtures/consumer-choice`. Give a fresh agent only the skill and source pack, with a user request to build the complete small course as a primary learning text in coherent Chinese for a student rusty in constrained optimization. Let it write an actual isolated vault. Do not supply the reviewer's expected answers or suspected defects.
+
+The pack has different numbers and additional substantive content beyond the bundled teaching-standard example. Assess actual passages using [teaching-rubric.md](teaching-rubric.md). A file for every lecture is insufficient; examine source details, exception cases, distinct worked examples, all subparts and the reasoning needed to solve them. This small course is a bounded evaluation, not a substitute for a full-semester trial.
 
 ## 1. First course from complete local inputs
 
