@@ -21,6 +21,15 @@ Initial release: 2026-09-20. Teaching-depth revision: 2026-09-22.
 - The accompanying diagram was generated from the stated equations and visually inspected: its A/B/C coordinates, budget-line slopes, old/new utility curves and labels agree with the teaching text.
 - Local Markdown link targets in the public documentation were checked separately from the bundled wiki-link checker. No missing target was found. This does not certify external URLs or every heading fragment.
 
+## Reading and practice revision checks (2026-09-29)
+
+This change updates teaching instructions, review criteria and an [original progression example](skills/stem-study-vault/references/reading-and-practice-example.md); helper code is unchanged.
+
+- The skill validator passed. The bundled math checker parsed 222 spans across eight reference documents without syntax errors, and all local Markdown link targets in the repository resolved. A syntax/link check does not establish teaching quality.
+- All five numerical cases in the new example were checked with exact rational arithmetic using a finite-sum expression independently of its step-by-step recurrence calculations. Twelve input/state combinations also confirmed the direction condition in the changed-coefficient task.
+- Manual reading checked the worked example and all four exercises for complete local inputs, separate folded hints/solutions, explicit initial-state resets, an identifiable change of demand and prerequisites taught before use. Review caught that the direction-comparison method deserved a visible explanation before the final variation; that explanation was added instead of leaving it only in an earlier solution.
+- The new source-screenshot rules and behavioral scenario were reviewed as instructions; no new source-image extraction trial, independent agent run or learner study was performed for this revision. The September 22 forward-test results describe that earlier frozen version and must not be treated as observed validation of the new practice behavior. No new full-course or Obsidian-native rendering result is claimed.
+
 ## What those checks do not establish
 
 - No controlled learning study, time-saving measurement or grade improvement has been performed.
