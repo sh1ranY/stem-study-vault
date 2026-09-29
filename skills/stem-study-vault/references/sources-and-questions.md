@@ -56,7 +56,7 @@ Use `Maintenance/Questions.md` (a table is sufficient):
 | Question ID | Stable ID distinguishing source/version and original question/subpart |
 | Source locator | Source ID, physical page/slide/heading and original numbering |
 | Concept/prerequisites | What is practiced and what must already be known |
-| Use | Worked / immediate / reinforcement / synthesis / unseen mock / out of scope |
+| Use | Worked / guided / independent / variation / reinforcement / synthesis / unseen mock / out of scope; for a planned sequence, note the capability and added demand between steps |
 | Destination | Exact note and heading/block, or withheld mock source |
 | Answer provenance | Official final answer / official working / authored / unknown |
 | Status | Arranged / blocked with reason / deliberately withheld / duplicate |

@@ -12,6 +12,9 @@ Use the sources and generated lessons, not only the skill instructions, headings
 | Conceptual meaning | Prose explains what is fixed, why the construction exists and how the result answers the question | Symbol manipulation without an interpretable connection |
 | Narrative clarity | Connected paragraphs develop ideas; summaries and lists have an appropriate supporting role | A whole lecture is a few bullets plus one calculation; filler adds length without substance |
 | Examples and practice | Distinct supplied cases are preserved; questions have all givens/subparts; independent practice follows teaching | One generic worked example replaces the other source cases |
+| Local reading inputs | Necessary givens, notation, figures and assumptions available in text or working local embeds before attempting | Reader must open a solution or search the slides for missing data; example and exercise inputs are confused |
+| Practice progression | A capability connects adjacent steps; the added demand and taught prerequisite can be identified; later revisits and support suit the learner | Only larger numbers are called progression; an untaught technique is required; an earlier error blocks the entire chain |
+| Source-image teaching | A useful, legible source region appears beside a specific interpretation, with an accurate locator and any redraw/correction identified | Decorative or unreadable crops; missing labels; a screenshot substitutes for explanation or is mistaken for another problem's data |
 | Mathematical/visual validity | Recomputed results, conditions, figure coordinates and labels agree; representative math renders | Correct-looking but wrong formulas, swapped effects or mislabeled curves |
 | Scope honesty | Complete versus pending work is accurate; content review is separate from learner mastery | Empty indices or mapped topics are presented as a completed taught course |
 

@@ -6,6 +6,10 @@ A Codex skill for STEM and quantitative-course students. Its default output is a
 
 [中文说明](README.md) · [Original example vault](examples/demo-vault/Start.md) · [Validation and limits](VALIDATION.md)
 
+## Reading continuity and progressive practice
+
+Lessons keep required notation, conditions, data and figures at the reading location, explaining reasoning and intermediate states in connected prose. Useful source screenshots are legible, cited and interpreted beside the text. Practice develops a capability through supported attempts, independent reasoning, changed conditions and synthesis as appropriate; no fixed stage count or word quota is required. See the [original reading/practice example](skills/stem-study-vault/references/reading-and-practice-example.md).
+
 ## Teaching-quality revision — 2026-09-22
 
 The revision addresses omissions and overly compressed, fragmented teaching reported during a whole-course trial. It adds item-level source accounting, source-to-lesson checks of actual explanations, explicit handling of conditions/visuals/distinct examples/subparts, and detailed batching for large courses. A topic heading or source link does not establish that the subject was taught.
