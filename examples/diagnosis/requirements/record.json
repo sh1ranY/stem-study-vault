@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "course_id": "COMP201-original-demo",
+  "data_origin": "synthetic",
+  "objectives": [
+    {
+      "id": "o1",
+      "description": "保留需求条件和量词，按相应指标验收"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "d1",
+      "objective_ids": [
+        "o1"
+      ],
+      "kind": "diagnosis",
+      "version": "1",
+      "source_version": "authored-v1"
+    },
+    {
+      "id": "t1",
+      "objective_ids": [
+        "o1"
+      ],
+      "kind": "transfer",
+      "version": "1",
+      "source_version": "authored-v1"
+    },
+    {
+      "id": "r1",
+      "objective_ids": [
+        "o1"
+      ],
+      "kind": "retention",
+      "version": "1",
+      "source_version": "authored-v1"
+    }
+  ],
+  "events": [
+    {
+      "id": "e1",
+      "task_id": "d1",
+      "response": "第一句是导出功能，第二句是响应时间约束，方便还需澄清。N0、单用户、最多100条下平均2秒，符合每次2秒。",
+      "origin": "synthetic",
+      "correctness": "partial",
+      "reason": "分类和条件保留正确，但用平均代替逐次限制。",
+      "active": true,
+      "support": "none",
+      "support_text": "",
+      "exposure": "unseen",
+      "observed_at": null
+    },
+    {
+      "id": "e2",
+      "task_id": "d1",
+      "response": "6秒的那次超过2秒，因此失败；平均2秒不能抵消这个反例。",
+      "origin": "synthetic",
+      "correctness": "correct",
+      "reason": "在给定提示下修正同题；不是独立新题证据。",
+      "active": true,
+      "support": "step",
+      "support_text": "最慢一次是多少？它是否符合原句中的每次？",
+      "exposure": "same_question",
+      "observed_at": null
+    },
+    {
+      "id": "e3",
+      "task_id": "t1",
+      "response": "N1、40并发、文件不超过10MB，平均3.12秒，达标97次，小于98，所以这批失败。一次测试不能保证所有运行情况。",
+      "origin": "synthetic",
+      "correctness": "correct",
+      "reason": "正确保留条件、计算平均及次数，并按给定次数判定。",
+      "active": true,
+      "support": "none",
+      "support_text": "",
+      "exposure": "related_instruction",
+      "observed_at": null
+    }
+  ],
+  "claims": [
+    {
+      "id": "c1",
+      "objective_id": "o1",
+      "status": "independent",
+      "scope": "一次新上传场景的验收指标转换，不代表需求工程整体掌握。",
+      "evidence_ids": [
+        "e3"
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "a1",
+      "objective_id": "o1",
+      "after_event_id": "e2",
+      "evidence_ids": [
+        "e1",
+        "e2"
+      ],
+      "strategy_id": "representations-v1",
+      "change": "保留原有分类讲解；增加平均值与逐次量词的反例，再用达标次数的新场景复查。",
+      "verification_task_id": "t1"
+    }
+  ],
+  "dimensions": {
+    "prerequisites": {
+      "summary": "只观察了当前任务涉及的局部基础；更广前置知识尚未评估。",
+      "evidence_ids": [
+        "e1"
+      ]
+    },
+    "representations": {
+      "summary": "分类和条件保留正确，但用平均代替逐次限制。",
+      "evidence_ids": [
+        "e1"
+      ]
+    },
+    "support": {
+      "summary": "模拟作答在具体提示后修正；不能从顺序效应中识别教学方法的因果效果。",
+      "evidence_ids": [
+        "e2"
+      ]
+    },
+    "transfer_retention": {
+      "summary": "一次新场景作答正确；延迟保持尚未观察。",
+      "evidence_ids": [
+        "e3"
+      ]
+    },
+    "self_assessment": {
+      "summary": "未观察：没有作答前信心或自检方法记录。",
+      "evidence_ids": []
+    },
+    "goals_preferences": {
+      "summary": "未观察：没有真实学习者的自报信息。",
+      "evidence_ids": []
+    }
+  }
+}

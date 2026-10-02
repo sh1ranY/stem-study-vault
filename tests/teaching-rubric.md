@@ -16,6 +16,8 @@ Use the sources and generated lessons, not only the skill instructions, headings
 | Practice progression | A capability connects adjacent steps; the added demand and taught prerequisite can be identified; later revisits and support suit the learner | Only larger numbers are called progression; an untaught technique is required; an earlier error blocks the entire chain |
 | Source-image teaching | A useful, legible source region appears beside a specific interpretation, with an accurate locator and any redraw/correction identified | Decorative or unreadable crops; missing labels; a screenshot substitutes for explanation or is mistaken for another problem's data |
 | Mathematical/visual validity | Recomputed results, conditions, figure coordinates and labels agree; representative math renders | Correct-looking but wrong formulas, swapped effects or mislabeled curves |
+| Evidence-based adjustment | A specific observed attempt changes an identifiable explanation/practice; alternatives and scope remain explicit | Only a generic longer lesson or a fixed learner-type label |
+| Independent learning evidence | Hints, exact-question exposure, new attempts and actual delayed checks are distinguished | Same-question correction or a scheduled review is called independent mastery/retention |
 | Scope honesty | Complete versus pending work is accurate; content review is separate from learner mastery | Empty indices or mapped topics are presented as a completed taught course |
 
 A material failure requires repair or an explicit incomplete outcome; do not average it away with a high overall score. Avoid word-count thresholds: a long lesson can still omit the crucial argument.

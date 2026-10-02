@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "course_id": "COMP207-original-demo",
+  "data_origin": "synthetic",
+  "objectives": [
+    {
+      "id": "o1",
+      "description": "按业务规则区分联合主键、外键和非空约束"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "d1",
+      "objective_ids": [
+        "o1"
+      ],
+      "kind": "diagnosis",
+      "version": "1",
+      "source_version": "authored-v1"
+    },
+    {
+      "id": "t1",
+      "objective_ids": [
+        "o1"
+      ],
+      "kind": "transfer",
+      "version": "1",
+      "source_version": "authored-v1"
+    },
+    {
+      "id": "r1",
+      "objective_ids": [
+        "o1"
+      ],
+      "kind": "retention",
+      "version": "1",
+      "source_version": "authored-v1"
+    }
+  ],
+  "events": [
+    {
+      "id": "e1",
+      "task_id": "d1",
+      "response": "重复姓名允许。(11,AI)不允许，因为11已有；(11,DB)重复组合，(99,AI)没有学生，(NULL,AI)不满足非空。",
+      "origin": "synthetic",
+      "correctness": "partial",
+      "reason": "能区分其他拒绝原因，但把联合唯一性应用到了单列。",
+      "active": true,
+      "support": "none",
+      "support_text": "",
+      "exposure": "unseen",
+      "observed_at": null
+    },
+    {
+      "id": "e2",
+      "task_id": "d1",
+      "response": "只有学生编号重复，不是整对重复；(11,AI)允许。",
+      "origin": "synthetic",
+      "correctness": "correct",
+      "reason": "在给定提示下修正同题；不是独立新题证据。",
+      "active": true,
+      "support": "step",
+      "support_text": "初始表已有(11,DB)和(11,SE)：相同的是一列还是完整组合？",
+      "exposure": "same_question",
+      "observed_at": null
+    },
+    {
+      "id": "e3",
+      "task_id": "t1",
+      "response": "(21,32)、(22,31)允许；(21,31)重复组合；(99,32)外键失败；(NULL,32)非空失败。电子书允许不同会员借同一本。",
+      "origin": "synthetic",
+      "correctness": "correct",
+      "reason": "五项判断及业务条件解释正确。",
+      "active": true,
+      "support": "none",
+      "support_text": "",
+      "exposure": "related_instruction",
+      "observed_at": null
+    }
+  ],
+  "claims": [
+    {
+      "id": "c1",
+      "objective_id": "o1",
+      "status": "independent",
+      "scope": "一次新关系中的插入约束分析，SQL编写与范式分析未评估。",
+      "evidence_ids": [
+        "e3"
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "a1",
+      "objective_id": "o1",
+      "after_event_id": "e2",
+      "evidence_ids": [
+        "e1",
+        "e2"
+      ],
+      "strategy_id": "representations-v1",
+      "change": "将业务关系、允许的两行与联合主键DDL逐项对应，区分外键和非空，换电子书场景撤去提示复查。",
+      "verification_task_id": "t1"
+    }
+  ],
+  "dimensions": {
+    "prerequisites": {
+      "summary": "只观察了当前任务涉及的局部基础；更广前置知识尚未评估。",
+      "evidence_ids": [
+        "e1"
+      ]
+    },
+    "representations": {
+      "summary": "能区分其他拒绝原因，但把联合唯一性应用到了单列。",
+      "evidence_ids": [
+        "e1"
+      ]
+    },
+    "support": {
+      "summary": "模拟作答在具体提示后修正；不能从顺序效应中识别教学方法的因果效果。",
+      "evidence_ids": [
+        "e2"
+      ]
+    },
+    "transfer_retention": {
+      "summary": "一次新场景作答正确；延迟保持尚未观察。",
+      "evidence_ids": [
+        "e3"
+      ]
+    },
+    "self_assessment": {
+      "summary": "未观察：没有作答前信心或自检方法记录。",
+      "evidence_ids": []
+    },
+    "goals_preferences": {
+      "summary": "未观察：没有真实学习者的自报信息。",
+      "evidence_ids": []
+    }
+  }
+}

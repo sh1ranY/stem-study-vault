@@ -12,11 +12,13 @@ Do not “repair” a protected note to make a checker pass. Fix the generated d
 
 ## Useful delivery
 
+For evidence-based adaptations, trace a real attempt to the provisional interpretation, the changed teaching passage and a new verification task. Inspect the actual change, not just a configuration file saying it happened. Check that support/answer exposure is recorded, unobserved dimensions remain unknown, and a correction retires dependent judgments. Structural validation of a learning record cannot certify the interpretation or learning effectiveness.
+
 Give the entry note, covered scope, a concrete next learning action and material limitations. Keep detailed source/validation records available in `Maintenance`. Explain how to continue by adding files, asking for a concept explanation, submitting a worked attempt or switching to review. Do not use file counts or word counts as evidence of learning improvement.
 
 ## Incremental updates
 
-1. Read `Learning profile.md`, `Maintenance/Progress.md` and the current source/question maps.
+1. Read `Learning profile.md`, `Maintenance/Progress.md` and the current source/question maps. If structured learning records exist, read the relevant objective's evidence and current decisions using [learning-records.md](learning-records.md); otherwise continue normally without creating empty records.
 2. Generate a fresh inventory outside the source tree. Compare relative identities and hashes with the prior inventory. A renamed identical file is not a new body of content; a same-named changed file is a new version to inspect.
 3. Read changed sources; identify affected units and questions. Preserve old source identities/versions where needed to explain historical references. Do not infer that a changed hash means a changed conclusion.
 4. Update affected generated notes, links and mappings in manageable batches. Preserve personal edits; where generated and personal text are mixed, keep personal text unchanged or add an adjacent supplement rather than replacing the page wholesale.
