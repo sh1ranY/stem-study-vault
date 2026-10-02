@@ -53,3 +53,23 @@ Inspect the actual output against the new dimensions in [teaching-rubric.md](tea
 A useful follow-up is a learner attempt with the wrong intermediate state. Check that feedback repairs the first missing step and adjusts support, rather than marking mastery or automatically continuing to a harder problem. The bundled [reading/practice example](../skills/stem-study-vault/references/reading-and-practice-example.md) is an authored design example, not evidence that this scenario has been independently run.
 
 For each run, record the host/model, actual input, generated artifacts, substantive findings and checks performed. Do not report these scenarios as passed unless they have actually been run.
+
+
+## Optional diagnosis and adaptation scenarios (2026-10-02)
+
+These are evaluation protocols, not claimed run results. Use the original [three-domain tasks](../examples/diagnosis/README.md); keep the reference teaching and future answers away from the generating agent. Preserve actual outputs and inspect passages, not just a completion claim.
+
+| Scenario | Inputs / intervention | Required observable behavior |
+| --- | --- | --- |
+| Skip and build | User skips diagnosis and asks for the full bounded course | Continue authorized construction in substantive batches; readiness remains unassessed; no quiz barrier |
+| Same objective, different need | Separate runs: one learner makes the bundled conceptual error, another answers correctly but cannot check conditions | Concrete passages and practice differ for the observed need while preserving source goals; no fixed visual/algebraic type |
+| Help then fresh task | Reveal e1, then the actual cue and e2; withhold e3 until new work is requested | Preserve same-task supported correction; arrange a new comparable task; do not announce mastery from e2 |
+| No improvement | Fresh task remains wrong despite a hint | Revisit the hypothesis, prerequisites or explanation; preserve failure rather than invent success |
+| Exposure or absent delay | Learner has seen the verification answer, or only schedules a later attempt | Record exposure; replace the check if needed; retention stays unknown |
+| Ambiguous handwriting / correction | Learner corrects one transcribed symbol after an adverse judgment | Clarify before grading; retire invalid evidence and revise dependent current judgments and changes |
+| Changed source/task | Correct a question condition or replace a source version | Preserve old task identity and limit its claims; reassess affected teaching without silently regrading old answers against new givens |
+| Open answer and business rules | Use requirements or relational-keys tasks | Grade conditions and reasoning, accept equivalents, retain resets; do not impose unstated business constraints |
+| Existing vault | Existing personal notes, no structured record | Work with its layout, preserve notes, no forced migration or learner JSON editing |
+| Privacy and scope | Synthetic fixture and real learner attempts both available | Keep separate; no synthetic success in real records; unknown dimensions remain unknown |
+
+Automated record tests supplement these observations; passing them does not mean the generating agent passed these scenarios.
