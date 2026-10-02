@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "course_id": "ELEC270-original-demo",
+  "data_origin": "synthetic",
+  "objectives": [
+    {
+      "id": "o1",
+      "description": "解释斜率与高度，构造平台和跳变信号"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "d1",
+      "objective_ids": [
+        "o1"
+      ],
+      "kind": "diagnosis",
+      "version": "1",
+      "source_version": "authored-v1"
+    },
+    {
+      "id": "t1",
+      "objective_ids": [
+        "o1"
+      ],
+      "kind": "transfer",
+      "version": "1",
+      "source_version": "authored-v1"
+    },
+    {
+      "id": "r1",
+      "objective_ids": [
+        "o1"
+      ],
+      "kind": "retention",
+      "version": "1",
+      "source_version": "authored-v1"
+    }
+  ],
+  "events": [
+    {
+      "id": "e1",
+      "task_id": "d1",
+      "response": "r(t-2)的值为0、0、3；x的值为1、0、0，因为两项斜率抵消。",
+      "origin": "synthetic",
+      "correctness": "partial",
+      "reason": "移位代入正确，但把斜率抵消解释成高度归零。",
+      "active": true,
+      "support": "none",
+      "support_text": "",
+      "exposure": "unseen",
+      "observed_at": null
+    },
+    {
+      "id": "e2",
+      "task_id": "d1",
+      "response": "3-(3-2)=2；展开后一直是2，停止增长不等于归零。",
+      "origin": "synthetic",
+      "correctness": "correct",
+      "reason": "在给定提示下修正同题；不是独立新题证据。",
+      "active": true,
+      "support": "step",
+      "support_text": "请先代入t=3，再展开t-(t-2)，比较高度和斜率。",
+      "exposure": "same_question",
+      "observed_at": null
+    },
+    {
+      "id": "e3",
+      "task_id": "t1",
+      "response": "2r(t-1)-2r(t-4)-6u(t-6)；值为2、6、0、0。第二项停止增长，第三项减去平台高度6。",
+      "origin": "synthetic",
+      "correctness": "correct",
+      "reason": "表达式、四点值及斜率/高度解释均与目标相符。",
+      "active": true,
+      "support": "none",
+      "support_text": "",
+      "exposure": "related_instruction",
+      "observed_at": null
+    }
+  ],
+  "claims": [
+    {
+      "id": "c1",
+      "objective_id": "o1",
+      "status": "independent",
+      "scope": "一次新信号的平台与跳变构造，尚未覆盖其他信号运算。",
+      "evidence_ids": [
+        "e3"
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "a1",
+      "objective_id": "o1",
+      "after_event_id": "e2",
+      "evidence_ids": [
+        "e1",
+        "e2"
+      ],
+      "strategy_id": "representations-v1",
+      "change": "在分段推导处并列说明差值、平台高度与零斜率，再用阶跃解释跳变；撤去模板后做t1。",
+      "verification_task_id": "t1"
+    }
+  ],
+  "dimensions": {
+    "prerequisites": {
+      "summary": "只观察了当前任务涉及的局部基础；更广前置知识尚未评估。",
+      "evidence_ids": [
+        "e1"
+      ]
+    },
+    "representations": {
+      "summary": "移位代入正确，但把斜率抵消解释成高度归零。",
+      "evidence_ids": [
+        "e1"
+      ]
+    },
+    "support": {
+      "summary": "模拟作答在具体提示后修正；不能从顺序效应中识别教学方法的因果效果。",
+      "evidence_ids": [
+        "e2"
+      ]
+    },
+    "transfer_retention": {
+      "summary": "一次新场景作答正确；延迟保持尚未观察。",
+      "evidence_ids": [
+        "e3"
+      ]
+    },
+    "self_assessment": {
+      "summary": "未观察：没有作答前信心或自检方法记录。",
+      "evidence_ids": []
+    },
+    "goals_preferences": {
+      "summary": "未观察：没有真实学习者的自报信息。",
+      "evidence_ids": []
+    }
+  }
+}
