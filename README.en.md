@@ -10,6 +10,14 @@ A Codex skill for STEM and quantitative-course students. Its default output is a
 
 Lessons keep required notation, conditions, data and figures at the reading location, explaining reasoning and intermediate states in connected prose. Useful source screenshots are legible, cited and interpreted beside the text. Practice develops a capability through supported attempts, independent reasoning, changed conditions and synthesis as appropriate; no fixed stage count or word quota is required. See the [original reading/practice example](skills/stem-study-vault/references/reading-and-practice-example.md).
 
+## Optional diagnosis and ongoing adaptation
+
+Start with a few current-unit tasks or skip diagnosis and begin learning. The skill uses attempts to observe prerequisites, representation conversion, response to support, transfer/retention, self-assessment/methods, and goals/conditions/preferences. These are provisional observations, not a validated six-factor scale, ability score or fixed learning-style label.
+
+Evidence must change specific explanations and practice. Correcting a familiar question after seeing its answer is not independent performance; an unattempted delayed check is not retention. Existing vaults need no migration. See the [three original subject examples](examples/diagnosis/README.md) for signal representation, requirements and relational keys. Their responses are explicitly synthetic, not observed learner outcomes.
+
+The [strategy extraction guide](skills/stem-study-vault/references/strategy-extraction.md) adapts Nuwa's decision-extraction approach into conditional instructional strategies; Nuwa installation is not required. Optional [learning records](skills/stem-study-vault/references/learning-records.md) preserve evidence across sessions. A read-only standard-library checker validates record structure, references and support/exposure constraints, not grading or teaching effectiveness.
+
 ## Teaching-quality revision — 2026-09-22
 
 The revision addresses omissions and overly compressed, fragmented teaching reported during a whole-course trial. It adds item-level source accounting, source-to-lesson checks of actual explanations, explicit handling of conditions/visuals/distinct examples/subparts, and detailed batching for large courses. A topic heading or source link does not establish that the subject was taught.
