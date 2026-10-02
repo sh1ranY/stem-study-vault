@@ -15,6 +15,10 @@ Inventory/snapshot records relative names, sizes and SHA-256 hashes, skipping hi
 
 `init` creates a new course folder and a few navigation/profile/progress pages; it refuses an existing course. It does not copy sources or generate teaching content. Use it for a new course only. For an established vault, adapt the existing layout directly. Do not delete a course to make initialization succeed.
 
+## Optional learning-record validation
+
+`python3 scripts/learning_tools.py "/path/to/record.json"` checks the optional [version 1 learning record](learning-records.md) without changing it. It needs only Python 3.9+ and prints a structural result without student responses. Exit codes are 0 for a structurally valid record, 1 for a record violation and 2 for a read/JSON error. It does not grade, infer mastery or create/update records. An old vault without learning records does not need this check.
+
 ## Optional extraction
 
 If no suitable PDF/PPTX reader is already available, install the extraction dependencies in an isolated environment using the host's normal package workflow:

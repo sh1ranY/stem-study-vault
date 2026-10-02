@@ -33,3 +33,5 @@ Choose a representative concept with a manageable prerequisite chain. Include on
 Do not require a learner to complete a quiz before delivering authorized content. In the absence of performance evidence, mark readiness as **unassessed** and state the working assumptions. A request to build the full course is sufficient authorization to continue construction.
 
 Keep a short learning profile: goals, background, language, time constraints if provided, practice preferences, protected material and evidence from actual feedback. Avoid personal identifiers unrelated to learning. If a preference changes, update it once and apply it to future work; do not rewrite an entire accepted course unnecessarily.
+
+For an optional course-related diagnostic, follow [learning-diagnosis.md](learning-diagnosis.md). Reuse existing attempts before requesting new ones. Offer a small current-unit task with a skip route; do not ask a student to label their own cognitive ability. Ask for confidence or the uncertain step before showing feedback when it helps interpret the attempt. A stated preference is not evidence that matching instruction to that preference improves learning.

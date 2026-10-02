@@ -23,6 +23,8 @@ My Vault/
 
 Create meaningful pages as they are needed. A new empty course created by the helper is a scaffold, not a completed knowledge base. Folder labels and teaching language may differ; retain an existing learner's organization. Never assume a semester length or course count. Use `Lessons` for dependency-ordered learning units even if a source calls them weeks, parts or lectures.
 
+When persisting actual learning attempts, optionally add `Maintenance/Learning/record.json` and a generated `Summary.md` using [learning-records.md](learning-records.md). They do not replace user-owned `Personal/` notes or silently rewrite an existing learning profile. Do not create empty diagnostic folders in every old vault; initialize records only when useful. Evidence data remains private even when the skill itself is open source.
+
 `Course.md` is the daily entry: learning goal, next lesson, sequence, practice/revision and source entry points. Keep build logs and extraction details under `Maintenance`. Personal notes are user-owned; generated corrections or explanations should live beside them unless the user requests edits.
 
 Use simple frontmatter when helpful:

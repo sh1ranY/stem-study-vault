@@ -16,6 +16,8 @@ Only the third meets the primary-text standard. A correct formula followed by a 
 
 ## Explain in connected paragraphs
 
+When attempts are available, use the evidence-to-decision path in [learning-diagnosis.md](learning-diagnosis.md). Identify the particular prerequisite, distinction or representation link that needs teaching and change that passage and its practice. Keep an independently usable explanation and the supplied course goals. With no attempt, use the stated background and keep readiness unassessed rather than inventing a personalized diagnosis.
+
 Keep the information needed for the current step at the reading location: define notation before use; supply the actual table, diagram, initial conditions and assumptions for an example or question. A reusable local embed or a separately expandable input panel is preferable to copying large data repeatedly. Keep input visible without opening a hint or solution, and distinguish source figures, worked-example data and exercise data. Check that the embed resolves and is readable; a link that sends the learner elsewhere to recover necessary givens is not equivalent.
 
 Use a textbook voice: precise, readable sentences that develop one idea and lead into the next. A paragraph should add a useful meaning, reason, distinction, condition or consequence. Prefer explicit connections such as “this quantity is held fixed so that…” and “we can make this substitution because…” to a row of disconnected conclusions.
@@ -85,6 +87,8 @@ Question, givens and source/original/adapted/authored identity.
 ```
 
 ## Review the actual teaching before declaring the batch complete
+
+Alongside source coverage, check capability coverage: where does the learner personally try each important newly taught operation? See [subject-design.md](subject-design.md). An original question being mapped to a page does not prove that every new operation in the explanation has an independent practice opportunity.
 
 Read the source alongside the lesson, then attempt a relevant supplied question using only the lesson and its local inputs. Follow at least one transition between practice steps: identify the prerequisite already taught and the new demand, verify that the later task is solvable without guessing data or reading its solution, and check that a previous wrong answer does not silently corrupt it. Inspect one screenshot/figure with its explanation when visuals are used. Look for missing concepts/branches, unexplained transitions, undefined notation and reliance on absent diagrams or source pages. A successful familiar worked example does not test all the source's other cases.
 
