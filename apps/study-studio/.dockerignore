@@ -12,3 +12,5 @@
 !backend/**
 backend/**/__pycache__
 backend/**/*.pyc
+
+data-demo

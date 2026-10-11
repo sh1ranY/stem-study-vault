@@ -1,6 +1,6 @@
 """Authored presentation only. Task identity, answer keys and recorded evidence never depend on locale."""
 import copy
-from . import teaching
+from . import teaching, computing
 
 VERSION = 'pilot-en-2026-10-11'
 TOPICS_EN = {
@@ -25,11 +25,16 @@ TOPICS_EN = {
 }
 
 def topic(key, language):
+    if key in computing.PACKS: return computing.topics(language=language)[key]
     return {**teaching.TOPICS[key], **(TOPICS_EN[key] if language=='en' else {})}
 
 
 def task(t, language):
     out=copy.deepcopy(t)
+    if t['topic'] in computing.PACKS:
+        translated=computing.task(t['topic'],t['phase'],t['number'],language)
+        for key in ('title','objective','source_note','prompt','fields','hint','solution'): out[key]=translated[key]
+        return out
     if language!='en': return out
     key=t['topic']; phase=t['phase']; k=t['number']+1+(24 if phase=='review' else 0); d=phase=='diagnosis'
     out.update(language='en',translation_version=VERSION,title={'diagnosis':'Diagnostic check','practice':'Fresh independent practice','review':'Review check'}[phase]+' · '+TOPICS_EN[key]['title'],objective=TOPICS_EN[key]['objective'],source_note='Authored pilot problem based on course definitions; not an official exam question.')
@@ -59,8 +64,8 @@ def attempt(a, t, language):
     out=copy.deepcopy(a);r=out['result'];display=task(t,language)
     bad=next((f for f in display['fields'] if not r['checks'][f['id']]),None)
     r.update(focus=bad['label'] if bad else None,
-        feedback=f'First check “{bad["label"]}”. This could involve arithmetic, reading or the concept; one response does not define a permanent learner type.' if bad else 'All key numerical values meet the criteria. Try a fresh problem to check transfer; this does not establish mastery of the whole topic.',
-        teaching=TOPICS_EN[t['topic']]['routes'][r['route']],scope='Numerical criteria checked. Free-form reasoning needs separate review; AI provides suggestions only.')
+        feedback=f'First check “{bad["label"]}”. This could involve arithmetic, reading or the concept; one response does not define a permanent learner type.' if bad else 'All checked answers meet the criteria. Try a fresh problem to check transfer; this does not establish mastery of the whole topic.',
+        teaching=topic(t['topic'],language)['routes'][r['route']],scope='Bounded answer criteria checked. Free-form reasoning needs separate review; AI provides suggestions only.')
     return out
 
 ERRORS_EN = {

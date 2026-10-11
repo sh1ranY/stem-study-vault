@@ -6,11 +6,23 @@ A Codex skill for STEM and quantitative-course students. Its default output is a
 
 [中文说明](README.md) · [Original example vault](examples/demo-vault/Start.md) · [Validation and limits](VALIDATION.md)
 
-## Local learning application (pilot)
+## Local learning app: a standalone demo
 
-[Learning Studio](apps/study-studio/README.md) adds a React frontend, FastAPI backend, SQLite schema/migrations, and an ELEC270 diagnosis–teaching–photo-answer–feedback loop. Ramp construction includes Chinese/English guided teaching and interactive graphs. This is a local pilot; the rest of the interface and course are not fully localised.
+This repository contains two components: the **Skill** helps build Obsidian course notes from your own materials; **Study Studio** is a runnable React + FastAPI + SQLite learning app.
 
-The repository contains source code and original examples, not private course materials, learner databases, photos or API keys. Optional image transcription and AI feedback require a separately configured API key. The Skill workflow below remains available.
+The app supports **ELEC270, COMP201 and COMP207**, selected at the top of the sidebar. Each course includes three original starter topics with diagnosis, alternative explanations, text/photo answers, bounded checks, drafts and learning records. The UI, original tasks and demo notes are available in Chinese and English.
+
+Install Python (3.12 recommended) and Node.js (22.12+ recommended), download the repository, and run from `apps/study-studio`:
+
+```sh
+python3 start.py --demo
+```
+
+On Windows use `py -3 start.py --demo`. Double-click launchers are also available: `demo.command` for macOS and `demo.cmd` for Windows. Open `http://127.0.0.1:5177/` and create your own local account. Initial dependency installation needs internet; no private vault, course materials, API key or cloud account is required.
+
+[English installation and usage](apps/study-studio/GETTING_STARTED.en.md) · [中文完整说明](apps/study-studio/README.md)
+
+Demo storage is separate and AI calls are disabled. Normal local mode can import your own materials and optionally use your own API key. Private university files, vaults, accounts, learner databases, photos and credentials are excluded from this repository. The nine starter topics do not constitute full-course assessment or automatic generation of a new course. The separate Skill workflow follows below.
 
 ## Reading continuity and progressive practice
 

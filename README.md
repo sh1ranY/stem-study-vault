@@ -6,11 +6,23 @@
 
 [English](README.en.md) · [查看完整学习示例](examples/demo-vault/Lessons/01%20RC%20charging.md) · [检查范围](VALIDATION.md)
 
-## 本地学习应用（试点）
+## 本地学习应用：无需私人资料即可演示
 
-仓库现在包含 [Learning Studio](apps/study-studio/README.md)：React 前端、FastAPI 后端、SQLite 数据库结构与迁移，以及 ELEC270 的诊断、教学、拍照作答、反馈和个人记录流程。斜坡构造提供中英双语分步教学与交互图形；其他界面与课程尚未完整英语化。
+仓库包含两部分：**Skill** 帮你把自己的资料建成 Obsidian 讲义；**Study Studio** 提供可以直接运行的学习网页，包含 React 前端、FastAPI 后端、SQLite 数据库与自动检查。
 
-请按应用说明本地运行。仓库提供代码与原创示例，不包含私人知识库、学校课件、学习数据库、照片或模型密钥。应用的图片识别与 AI 反馈需另配模型 API key；下方 Skill 的安装和使用方式保持不变。
+Study Studio 已支持 **ELEC270、COMP201、COMP207**，在左侧顶部切换课程。每课提供三个原创入门主题，覆盖诊断、不同讲法、文字/照片作答、答案判据、草稿和学习记录；界面、原创题目与演示讲义支持简体中文/English。
+
+**第一次体验：**安装 Python（推荐3.12）与 Node.js（推荐22.12+），下载仓库后进入 `apps/study-studio`，运行：
+
+```sh
+python3 start.py --demo
+```
+
+Windows 使用 `py -3 start.py --demo`；也可双击 macOS 的 `demo.command` 或 Windows 的 `demo.cmd`。浏览器打开 `http://127.0.0.1:5177/`，创建自己的本机账号即可开始。首次安装需要联网下载依赖；不需要作者的课件、Obsidian、模型密钥或云端账户。
+
+[完整安装、使用与导入说明](apps/study-studio/README.md) · [English setup](apps/study-studio/GETTING_STARTED.en.md)
+
+演示使用独立数据目录并关闭AI调用。普通本地版可接入自己的资料与可选模型密钥；私人知识库、学校课件、账号数据库、照片、学习记录与密钥均不在公开仓库中。自动检查目前限于九个入门主题，不代表整门课的考核覆盖，也不支持上传任意课程后自动生成完整教学系统。下方是独立的 Skill 安装与使用说明。
 
 ## 阅读体验与练习递进
 

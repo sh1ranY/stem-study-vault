@@ -1,7 +1,8 @@
 """Read-only adapter from pilot evidence to the Skill's Version 1 exchange contract."""
-from .teaching import TOPICS
+from . import teaching
 
-def skill_record(groups,synthetic=False):
+def skill_record(groups,synthetic=False,course_code="ELEC270"):
+    TOPICS=teaching.topics(course_code)
     tasks={t['id']:t for t in groups['task']}; events=[];claims=[];decisions=[]
     observations=sorted(groups['attempt'],key=lambda a:a['at'])
     for a in observations:
@@ -25,7 +26,7 @@ def skill_record(groups,synthetic=False):
         if later:
             decisions.append({'id':'decision-'+a['id'],'objective_id':topic,'after_event_id':a['id'],'evidence_ids':[a['id']],
                 'strategy_id':a['result']['route']+'-v1','change':a['result']['teaching'],'verification_task_id':later[0]['id']})
-    return {'schema_version':1,'course_id':'ELEC270','data_origin':'synthetic' if synthetic else 'learner',
+    return {'schema_version':1,'course_id':course_code,'data_origin':'synthetic' if synthetic else 'learner',
       'objectives':[{'id':k,'description':v['objective']} for k,v in TOPICS.items()],
       'tasks':[{'id':t['id'],'objective_ids':[t['topic']],'kind':{'diagnosis':'diagnosis','practice':'transfer','review':'retention'}[t['phase']], 'version':t['version'],'source_version':t['course_version']} for t in tasks.values()],
       'events':events,'claims':claims,'decisions':decisions,'dimensions':{key:{'summary':summary,'evidence_ids':[]} for key,summary in {

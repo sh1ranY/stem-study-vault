@@ -25,7 +25,7 @@ const copy = {
     practice: "Try a fresh problem",
     diagnosis: "Check your starting point",
     attempts: "active attempts",
-    independent: "independent numerical checks",
+    independent: "independent answer checks",
     guidedSteps: "guided steps checked",
     due: "Suggested review",
     draft: "Draft saved",
@@ -45,7 +45,7 @@ const copy = {
     practice: "用新题检查理解",
     diagnosis: "检查当前起点",
     attempts: "次有效作答",
-    independent: "次独立数值检查",
+    independent: "次独立检查",
     guidedSteps: "步引导检查",
     due: "建议复查",
     draft: "草稿已保存",
@@ -88,11 +88,11 @@ export default function LearningOverview({
     return () => {
       active = false;
     };
-  }, [version, retry]);
+  }, [version, retry, course.id]);
   return (
     <section className="learning-overview" aria-labelledby="overview-title">
       <div>
-        <span className="pilot-eyebrow">ELEC270 · STUDY PLAN</span>
+        <span className="pilot-eyebrow">{course.code} · STUDY PLAN</span>
         <h2 id="overview-title">{tx.title}</h2>
         <p>{tx.scope}</p>
       </div>
@@ -103,7 +103,7 @@ export default function LearningOverview({
         </p>
       )}
       <div className="overview-grid">
-        {rows.map((r) => (
+        {rows.filter(r => course.topics[r.topic]).map((r) => (
           <article key={r.topic}>
             <span className="overview-number">
               {String(course.topics[r.topic].week).padStart(2, "0")}
@@ -135,7 +135,7 @@ export default function LearningOverview({
           </article>
         ))}
       </div>
-      <p className="pilot-muted">{tx.coverage}</p>
+      <p className="pilot-muted">{language === "en" ? `Coverage: ${Object.keys(course.topics).length} original starter topics with bounded answer checks. ${course.code === "ELEC270" ? "Step-by-step guided teaching is available for ramps. " : ""}${course.mode === "demo" ? "Demo notes are original examples, not a full course." : "Other units provide imported reading materials."}` : `当前覆盖：${Object.keys(course.topics).length}个原创入门练习主题，检查范围限于题目判据。${course.code === "ELEC270" ? "斜坡另有分步教学。" : ""}${course.mode === "demo" ? "演示讲义是原创示例，不代表完整课程。" : "其他单元提供导入的阅读资料。"}`}</p>
       <button disabled={disabled} onClick={onRead}>
         {tx.read}
       </button>

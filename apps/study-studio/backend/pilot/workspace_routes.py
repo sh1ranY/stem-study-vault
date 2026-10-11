@@ -2,7 +2,7 @@
 from typing import Optional
 from fastapi import APIRouter, Depends
 from pydantic import Field, BaseModel, ConfigDict
-from . import store, learning_path
+from . import store, learning_path, catalog, teaching
 
 class Draft(BaseModel):
     model_config=ConfigDict(extra="forbid")
@@ -12,12 +12,13 @@ class Draft(BaseModel):
     photo_id:Optional[str]=None
     prior_seen:bool=False
 
-def create_router(user, required, fail, lock):
+def create_router(user, required, fail, lock, current):
     router=APIRouter()
     @router.get('/learning/overview')
     def overview(u=Depends(user)):
         owner=u['id']
-        return learning_path.overview(store.listing('task',owner),store.listing('attempt',owner),store.listing('guided-session',owner),store.listing('answer-draft',owner))
+        c=current(u);g=catalog.groups(owner,c)
+        return learning_path.overview(g['task'],g['attempt'],g['guided-session'],g['answer-draft'],topics=teaching.topics(catalog.code(c)))
 
     @router.put('/drafts/{task_id}')
     def save_draft(task_id:str,body:Draft,u=Depends(user)):

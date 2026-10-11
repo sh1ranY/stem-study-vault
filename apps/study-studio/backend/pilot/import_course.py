@@ -1,17 +1,16 @@
-"""Read-only ELEC270 importer; content-addressed copies, provenance and gated callouts."""
+"""Read-only multi-course importer; content-addressed copies, provenance and gated callouts."""
 import argparse
 import os
 import hashlib
 import json
 import re
-import shutil
 from pathlib import Path
-from . import store
+from . import store, catalog
 
 DEFAULT_VAULT = Path(os.getenv('STUDIO_VAULT_ROOT', str(Path.home() / 'Documents' / 'Obsidian')))
 COURSE = Path('10 Y2上学期/ELEC270 信号与系统')
 DEFAULT_DESKTOP = Path(os.getenv('STUDIO_ELEC270_SOURCES', str(Path.home() / 'Desktop' / 'ELEC270 课程资料')))
-ALLOWED = {'.pdf', '.pptx', '.png', '.jpg', '.jpeg', '.webp', '.svg'}
+ALLOWED = {'.pdf', '.pptx', '.docx', '.png', '.jpg', '.jpeg', '.webp', '.svg'}
 
 def digest(data): return hashlib.sha256(data).hexdigest()
 def stable(text): return digest(text.encode())[:24]
@@ -20,13 +19,15 @@ def slug(text): return re.sub(r'[^\w\-\u4e00-\u9fff]+', '-', text).strip('-')
 def strip_front(text): return re.sub(r'\A---\n.*?\n---\n', '', text, flags=re.S)
 
 class Importer:
-    def __init__(self, vault, desktop):
+    def __init__(self, vault, desktop, course="ELEC270", course_root=None):
         self.vault, self.desktop = Path(vault).resolve(), Path(desktop).resolve()
-        self.root = self.vault / COURSE
+        if course not in catalog.COURSES: raise ValueError('Unsupported course code')
+        self.code = course
+        self.root = Path(course_root).resolve() if course_root else self.vault / '10 Y2上学期' / catalog.COURSES[course]['folder']
         self.assets, self.warnings, self.lessons = {}, [], []
         self.by_path = {}
         self.files = list(self.root.rglob('*'))
-        self.md_ids = {p.resolve(): 'elec270-' + stable(str(p.relative_to(self.root))) for p in self.root.glob('Weeks/*.md')}
+        self.md_ids = {p.resolve(): self.code.lower() + '-' + stable(str(p.relative_to(self.root))) for p in (self.root/'Weeks').rglob('*.md')}
 
     def asset(self, path):
         path = path.resolve()
@@ -84,7 +85,7 @@ class Importer:
                 if not body: self.warnings.append('嵌入位置缺失：'+target); return f'〔待核对嵌入：{label}〕'
                 return self.convert(body,path,chain+(marker,))
             if path in self.md_ids:
-                return f'[{label}](?lesson={self.md_ids[path]}' + ('#'+slug(fragment) if fragment else '') + ')'
+                return f'[{label}](?course={self.code}&lesson={self.md_ids[path]}' + ('#'+slug(fragment) if fragment else '') + ')'
             # Do not expose personal/maintenance Markdown through a raw file route.
             return f'{label}〔原库参考〕'
         return re.sub(r'(!?)\[\[([^\]]+)\]\]', link, text)
@@ -109,27 +110,33 @@ class Importer:
         flush(); return blocks
 
     def run(self):
-        if not self.md_ids: raise ValueError('没有找到 ELEC270 Weeks 讲义，保留现有课程版本。')
-        for path in sorted(self.md_ids):
+        if not self.md_ids: raise ValueError('没有找到 Weeks/*.md 讲义，保留现有课程版本。')
+        for index, path in enumerate(sorted(self.md_ids), 1):
             raw=path.read_bytes(); text=self.convert(strip_front(raw.decode()),path)
             key=self.md_ids[path]; title=next((l[2:] for l in text.splitlines() if l.startswith('# ')),path.stem)
-            week=int(re.search(r'Week\s*(\d+)',path.name)[1])
+            match=re.search(r'Week\s*(\d+)',path.name,re.I)
+            week=int(match[1]) if match else index
             self.lessons.append({'id':key,'title':title,'week':week,'source_path':str(path),'source_hash':digest(raw),'blocks':self.blocks(text,key)})
         # Register both original roots; deduplication is by bytes, format relations by base name only (candidate).
         for root in (self.root/'Sources', self.desktop):
             for path in sorted(root.rglob('*')):
-                if path.is_file() and path.suffix.lower() in {'.pdf','.pptx'}: self.asset(path)
+                if path.is_file() and path.suffix.lower() in {'.pdf','.pptx','.docx'}: self.asset(path)
         records=[]
         for path in sorted((self.root/'Practice').glob('*错题*.md')):
             text=path.read_text(); records.append({'id':stable(str(path)), 'title':path.stem, 'body':self.convert(strip_front(text),path),'source_hash':digest(path.read_bytes()),'note':'原库参考，未自动解释为已掌握或真实作答。'})
         fingerprint = digest(json.dumps({'lessons':self.lessons,'assets':sorted(self.assets),'records':records},ensure_ascii=False,sort_keys=True).encode())
-        version='elec270-'+fingerprint[:16]
-        course={'id':version,'title':'ELEC270 · 信号与系统','imported_at':store.now(),'lessons':self.lessons,'assets':list(self.assets.values()),'legacy_records':records,'warnings':sorted(set(self.warnings)),'content_hash':fingerprint,'schema_version':1}
+        version=self.code.lower()+'-'+fingerprint[:16]
+        course={'id':version,'code':self.code,'mode':'imported','title':self.code+' · '+catalog.COURSES[self.code]['title'],'imported_at':store.now(),'lessons':self.lessons,'assets':list(self.assets.values()),'legacy_records':records,'warnings':sorted(set(self.warnings)),'content_hash':fingerprint,'schema_version':1}
         with store.engine.begin() as conn:
-            if store.fetch('course','shared',version,conn) is None: store.save('course','shared',course,conn)
-            store.save('config','shared',{'id':'current-course','version':version},conn)
+            catalog.register(course,conn)
         return {'version':version,'lessons':len(self.lessons),'assets':len(self.assets),'locations':sum(len(a['locations']) for a in self.assets.values()),'hidden_blocks':sum(b['role']!='lesson' for l in self.lessons for b in l['blocks']),'legacy_records':len(records),'warnings':course['warnings']}
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--vault',type=Path,default=DEFAULT_VAULT);p.add_argument('--desktop',type=Path,default=DEFAULT_DESKTOP);a=p.parse_args()
-    print(json.dumps(Importer(a.vault,a.desktop).run(),ensure_ascii=False,indent=2))
+    p=argparse.ArgumentParser(description='Import local course copies; original files are never edited.')
+    p.add_argument('--course',choices=list(catalog.COURSES),default='ELEC270')
+    p.add_argument('--vault',type=Path,default=DEFAULT_VAULT)
+    p.add_argument('--course-root',type=Path,help='Folder containing Weeks/ and optional Sources/')
+    p.add_argument('--desktop',type=Path,help='Optional folder of PDF/PPTX/DOCX source files')
+    a=p.parse_args()
+    desktop=a.desktop or Path(os.getenv('STUDIO_'+a.course+'_SOURCES', str(Path.home()/'Desktop'/(a.course+' 课程资料'))))
+    print(json.dumps(Importer(a.vault,desktop,a.course,a.course_root).run(),ensure_ascii=False,indent=2))

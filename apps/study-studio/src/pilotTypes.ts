@@ -30,6 +30,8 @@ export type Topic = {
 };
 export type Course = {
   id: string;
+  code: string;
+  mode: "demo" | "imported";
   title: string;
   lessons: Lesson[];
   topics: Record<string, Topic>;
@@ -43,7 +45,7 @@ export type Task = {
   phase: string;
   title: string;
   prompt: string;
-  fields: { id: string; label: string }[];
+  fields: { id: string; label: string; choices?: {value: string; label: string}[] }[];
   source_note: string;
 };
 export type Result = {

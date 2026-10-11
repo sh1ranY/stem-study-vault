@@ -1,3 +1,11 @@
+# Pilot implementation history
+
+**Current installation and usage:** [README.md](README.md) / [English](GETTING_STARTED.en.md). Current verification is recorded in [VALIDATION.md](VALIDATION.md).
+
+The local app now supports three courses, a standalone original demo, per-account course selection and bilingual original content. The sections below preserve the earlier ELEC270 milestone; its counts, setup defaults and limitations describe that historical revision, not the current installer.
+
+---
+
 # ELEC270 local pilot
 
 This document describes local operation. The subsequent bilingual invited-pilot milestone and hosted setup are documented in [DEPLOYMENT.md](DEPLOYMENT.md); validation history is in [VALIDATION.md](VALIDATION.md).
