@@ -18,13 +18,13 @@ from fastapi.responses import FileResponse
 from PIL import Image, ImageOps, UnidentifiedImageError
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import delete
-from . import store, teaching, model, guided
+from . import store, teaching, model, guided, catalog
 from .export_record import skill_record
 
 router=APIRouter(prefix='/api/pilot')
 LOCK=threading.RLock()
 MODEL_LOCK=threading.Lock()
-COOKIE='elec270_session'
+COOKIE='study_demo_session' if os.getenv('STUDIO_DEMO')=='1' else 'elec270_session'
 class Body(BaseModel): model_config=ConfigDict(extra='forbid')
 class Login(Body):
     bootstrap_token:str=Field(default="",max_length=256)
@@ -80,16 +80,21 @@ def required(kind,owner,key,conn=None):
     if v is None: fail(404,'记录不存在或你没有访问权限。')
     return v
 
-def current():
-    c=store.fetch('config','shared','current-course')
-    if c is None: fail(409,'课程尚未导入，请运行 ELEC270 导入命令。')
-    return required('course','shared',c['version'])
+def current(u=None):
+    c=catalog.selected(u)
+    if c is None: fail(409,'课程尚未安装或不存在。 / Course is not installed or does not exist.')
+    return c
+
+
+def course_topics(u):
+    return teaching.topics(catalog.code(current(u)))
+
 
 def user(request:Request):
     token=request.cookies.get(COOKIE,'')
     session=store.fetch('login','auth',hashlib.sha256(token.encode()).hexdigest()) if token else None
     if not session or session['expires']<time.time(): fail(401,'请先登录。')
-    return required('user','auth',session['user_id'])
+    return {**required('user','auth',session['user_id']), '_course':request.headers.get('X-Study-Course') or request.query_params.get('course')}
 
 def event(owner,kind,conn=None,**values):
     return store.save('event',owner,{'id':store.uid(),'kind':kind,'at':store.now(),**values},conn)
@@ -170,58 +175,72 @@ def import_old(u=Depends(user)):
 def old_records(u=Depends(user)):
     return [{'id':r['id'],'title':r['snapshot']['unit']['title'],'attempt_count':len(r['snapshot'].get('attempts',[])),'note':r['note']} for r in store.listing('legacy-session',u['id'])]
 
+class SelectCourse(Body):
+    code:str
+
+@router.get('/courses')
+def courses(u=Depends(user)):
+    return {'active':catalog.code(current(u)), 'courses':catalog.summaries(teaching_language(u['id']))}
+
+@router.post('/courses/select')
+def select_course(body:SelectCourse,u=Depends(user)):
+    if body.code not in catalog.versions(): fail(404,'课程不存在。 / Course not found.')
+    store.save('course-preference',u['id'],{'id':'active','code':body.code})
+    return {'code':body.code}
+
 @router.get('/course')
 def course(u=Depends(user)):
-    c=current()
-    return {'id':c['id'],'title':c['title'],'imported_at':c['imported_at'],'lessons':[{'id':l['id'],'title':l['title'],'week':l['week']} for l in c['lessons']],
-            'topics':{k:{'title':v['title'],'week':v['week'],'objective':v['objective'],'routes':list(v['routes'])} for k,v in ((k,localization.topic(k,teaching_language(u['id']))) for k in teaching.TOPICS)},
+    c=current(u);language=teaching_language(u['id']);code=catalog.code(c)
+    return {'id':c['id'],'code':code,'mode':c.get('mode','imported'),'title':next(x['title'] for x in catalog.summaries(language) if x['code']==code),'imported_at':c['imported_at'],'lessons':[{'id':l['id'],'title':l.get('title_en',l['title']) if language=='en' else l['title'],'week':l['week']} for l in c['lessons']],
+            'topics':{k:{'title':v['title'],'week':v['week'],'objective':v['objective'],'routes':list(v['routes'])} for k,v in ((k,localization.topic(k,language)) for k in teaching.topics(code))},
             'asset_count':len(c['assets']),'warnings':c['warnings'],'legacy_records':c['legacy_records'] if u['role']=='owner' else []}
 
 @router.get('/lessons/{id}')
 def lesson(id:str,u=Depends(user)):
-    c=current();l=next((l for l in c['lessons'] if l['id']==id),None)
+    c=current(u);l=next((l for l in c['lessons'] if l['id']==id),None)
     if l is None: fail(404,'未找到这个学习单元。')
     unlocked={e.get('block_id') for e in store.listing('event',u['id']) if e['kind']=='block_reveal' and e.get('version')==c['id']}
-    return {**{k:v for k,v in l.items() if k not in ('blocks','source_path')},'version':c['id'],'blocks':[{**b,'body':b['body'] if b['role']=='lesson' or b['id'] in unlocked else None} for b in l['blocks']]}
+    return {**{k:v for k,v in l.items() if k not in ('blocks','source_path')},'title':l.get('title_en',l['title']) if teaching_language(u['id'])=='en' else l['title'],'version':c['id'],'blocks':[{**{k:v for k,v in b.items() if k!='body_en'},'body':(b.get('body_en',b['body']) if teaching_language(u['id'])=='en' else b['body']) if b['role']=='lesson' or b['id'] in unlocked else None} for b in l['blocks']]}
 
 @router.post('/search')
 def search(body:Search,u=Depends(user)):
-    c=current();terms=body.query.lower().split();matches=[]
+    c=current(u);terms=body.query.lower().split();matches=[]
     for l in c['lessons']:
         for b in l['blocks']:
             if b['role']!='lesson': continue
-            text=b['body'];score=sum(text.lower().count(t) for t in terms)
+            text=b.get('body_en',b['body']) if teaching_language(u['id'])=='en' else b['body'];score=sum(text.lower().count(t) for t in terms)
             if score:
-                pos=min([text.lower().find(t) for t in terms if t in text.lower()]);matches.append({'lesson_id':l['id'],'title':l['title'],'block_id':b['id'],'excerpt':text[max(0,pos-70):pos+230],'score':score})
+                pos=min([text.lower().find(t) for t in terms if t in text.lower()]);matches.append({'lesson_id':l['id'],'title':l.get('title_en',l['title']) if teaching_language(u['id'])=='en' else l['title'],'block_id':b['id'],'excerpt':text[max(0,pos-70):pos+230],'score':score})
     return sorted(matches,key=lambda x:x['score'],reverse=True)[:20]
 
 @router.get('/sources')
 def sources(u=Depends(user)):
-    return [{k:v for k,v in a.items() if k not in ('path','original_path')} for a in current()['assets'] if a['suffix'] in ('.pdf','.pptx')]
+    return [{k:v for k,v in a.items() if k not in ('path','original_path')} for a in current(u)['assets'] if a['suffix'] in ('.pdf','.pptx','.docx')]
 
 @router.get('/assets/{id}')
 def asset(id:str,u=Depends(user)):
-    a=next((a for a in current()['assets'] if a['id']==id),None)
+    a=next((a for c in store.listing('course','shared') for a in c['assets'] if a['id']==id),None)
     if not a: fail(404,'附件不存在。')
-    if a['suffix'] in ('.pdf','.pptx'): event(u['id'],'source_opened',asset_id=id,exposure='source-may-include-solutions')
+    if a['suffix'] in ('.pdf','.pptx','.docx'): event(u['id'],'source_opened',asset_id=id,exposure='source-may-include-solutions')
     # SVG from course source files is served as image, no inline HTML execution.
     headers={'Content-Security-Policy':"default-src 'none'; sandbox"}
     return FileResponse(a['path'],media_type={'.svg':'image/svg+xml','.pdf':'application/pdf'}.get(a['suffix']),headers=headers)
 
 @router.get('/state')
 def state(u=Depends(user)):
-    owner=u['id'];attempts=sorted(store.listing('attempt',owner),key=lambda a:a['at']);events=store.listing('event',owner)
+    owner=u['id'];groups=catalog.groups(owner,current(u));attempts=sorted(groups['attempt'],key=lambda a:a['at']);events=groups['event']
     active=[a for a in attempts if a['active']];summaries={}
-    for topic in teaching.TOPICS:
+    for topic in course_topics(u):
         seen=[a for a in active if a['topic']==topic]
         summaries[topic]={'attempts':len(seen),'independent':sum(a['result']['status']=='independent' for a in seen),'status':seen[-1]['result']['status'] if seen else 'unknown',
           'due_at':seen[-1].get('review_due') if seen else None,'route':(store.fetch('route',owner,topic) or {}).get('route',seen[-1]['result']['route'] if seen else 'visual')}
-    return {'drafts':store.listing('answer-draft',owner),'attempts':[localization.attempt(a,required('task',owner,a['task_id']),teaching_language(owner)) for a in attempts],'tasks':[localization.public_task(t,teaching_language(owner)) for t in sorted(store.listing('task',owner),key=lambda t:t['created_at'])],
-            'events':events,'summaries':summaries,'progress':store.listing('progress',owner),'photos':[{k:v for k,v in p.items() if k not in ('path','original_path')} for p in store.listing('photo',owner)],
-            'runs':[{**r,'status':'interrupted_or_unknown' if r['status']=='running' and (datetime.now(timezone.utc)-datetime.fromisoformat(r['at'])).total_seconds()>120 else r['status']} for r in store.listing('run',owner)],'feedback':store.listing('feedback',owner)}
+    return {'drafts':groups['answer-draft'],'attempts':[localization.attempt(a,required('task',owner,a['task_id']),teaching_language(owner)) for a in attempts],'tasks':[localization.public_task(t,teaching_language(owner)) for t in sorted(groups['task'],key=lambda t:t['created_at'])],
+            'events':events,'summaries':summaries,'progress':groups['progress'],'photos':[{k:v for k,v in p.items() if k not in ('path','original_path')} for p in groups['photo']],
+            'runs':[{**r,'status':'interrupted_or_unknown' if r['status']=='running' and (datetime.now(timezone.utc)-datetime.fromisoformat(r['at'])).total_seconds()>120 else r['status']} for r in groups['run']],'feedback':groups['feedback']}
 
 @router.post('/tasks')
 def make_task(body:TaskRequest,u=Depends(user)):
+    if body.topic not in course_topics(u): fail(422,'该主题不属于当前课程。 / Topic does not belong to the selected course.')
     with LOCK, store.engine.begin() as conn:
         previous=store.fetch('request',u['id'],body.request_id,conn)
         signature={'topic':body.topic,'phase':body.phase}
@@ -232,14 +251,14 @@ def make_task(body:TaskRequest,u=Depends(user)):
         n=sum(t['topic']==body.topic and t['phase']==body.phase for t in tasks)
         try: t=teaching.task(body.topic,body.phase,n)
         except ValueError as e: fail(422,str(e))
-        t['course_version']=current()['id'];store.save('task',u['id'],t,conn)
+        t['course_version']=current(u)['id'];store.save('task',u['id'],t,conn)
         store.save('request',u['id'],{'id':body.request_id,'signature':signature,'task_id':t['id']},conn)
         event(u['id'],'task_opened',conn,task_id=t['id'],topic=t['topic'])
         return localization.public_task(t,teaching_language(u['id']))
 
 @router.post('/route')
 def choose_route(body:Route,u=Depends(user)):
-    if body.topic not in teaching.TOPICS or body.route not in teaching.TOPICS[body.topic]['routes']: fail(422,'未知教学路径。')
+    if body.topic not in course_topics(u) or body.route not in course_topics(u)[body.topic]['routes']: fail(422,'未知教学路径。')
     with LOCK,store.engine.begin() as conn:
         store.save('route',u['id'],{'id':body.topic,'route':body.route,'at':store.now()},conn)
         event(u['id'],'route_chosen',conn,topic=body.topic,route=body.route)
@@ -247,20 +266,20 @@ def choose_route(body:Route,u=Depends(user)):
 
 @router.get('/teaching/{topic}')
 def help_topic(topic:str,route:str='visual',u=Depends(user)):
-    if topic not in teaching.TOPICS or route not in teaching.TOPICS[topic]['routes']: fail(404,'未知教学路径。')
+    if topic not in course_topics(u) or route not in course_topics(u)[topic]['routes']: fail(404,'未知教学路径。')
     return {'body':localization.topic(topic,teaching_language(u['id']))['routes'][route],'example':localization.topic(topic,teaching_language(u['id']))['example']}
 
 @router.patch('/progress')
 def progress(body:Progress,u=Depends(user)):
-    if not any(l['id']==body.lesson_id for l in current()['lessons']): fail(422,'未知学习单元。')
-    return store.save('progress',u['id'],{'id':body.lesson_id,'notes':body.notes,'at':store.now(),'version':current()['id']})
+    if not any(l['id']==body.lesson_id for l in current(u)['lessons']): fail(422,'未知学习单元。')
+    return store.save('progress',u['id'],{'id':body.lesson_id,'notes':body.notes,'at':store.now(),'version':current(u)['id']})
 
 @router.post('/reveal')
 def reveal(body:Reveal,u=Depends(user)):
     if body.task_id:
         if body.kind not in ('hint','solution'): fail(422,'未知提示类型。')
         t=required('task',u['id'],body.task_id);event(u['id'],body.kind,task_id=t['id']);return {'body':localization.task(t,teaching_language(u['id']))[body.kind]}
-    c=current();l=next((l for l in c['lessons'] if l['id']==body.lesson_id),None)
+    c=current(u);l=next((l for l in c['lessons'] if l['id']==body.lesson_id),None)
     b=next((b for b in l['blocks'] if b['id']==body.block_id),None) if l else None
     if not b: fail(404,'未找到内容。')
     event(u['id'],'block_reveal',block_id=b['id'],lesson_id=l['id'],version=c['id'],role=b['role']);return {'body':b['body']}
@@ -364,7 +383,8 @@ def feedback(id:str,body:Operation,u=Depends(user)):
     a=required('attempt',u['id'],id)
     if not a['active']: fail(409,'这条作答已撤回。')
     t=required('task',u['id'],a['task_id']);c=required('course','shared',a['course_version'])
-    l=next(l for l in c['lessons'] if l['week']==teaching.TOPICS[t['topic']]['week'])
+    l=next((l for l in c['lessons'] if l['week']==teaching.all_topics()[t['topic']]['week']),None)
+    if l is None: fail(409,'此主题没有对应讲义，暂不能生成有来源的AI反馈。 / No matching lesson is available for source-based AI feedback.')
     # Authored topic core is the bounded teaching context. Raw answers/solutions never enter tutor context.
     data={'language':teaching_language(u['id']),'task':localization.public_task(t,teaching_language(u['id'])),'working':a['working'],'answers':a['answers'],'checks':a['result']['checks'],
           'teaching_core':localization.topic(t['topic'],teaching_language(u['id']))['routes'],'source_ids':[l['id']],'source_context':{'id':l['id'],'title':l['title'],'excerpt':'\n'.join(b['body'] for b in l['blocks'] if b['role']=='lesson')[:10000]}}
@@ -388,13 +408,13 @@ def withdraw(id:str,body:Withdraw,u=Depends(user)):
 
 @router.get('/export')
 def export(u=Depends(user)):
-    groups={kind:store.listing(kind,u['id']) for kind in ('attempt','event','progress','task','photo','feedback','route','run','legacy-session','teaching-preference','guided-session','guided-check','answer-draft')}
+    c=current(u);code=catalog.code(c);groups=catalog.groups(u['id'],c)
     # This export excludes solutions, so exporting personal evidence is not solution exposure.
     groups['task']=[teaching.public_task(t) for t in groups['task']]
     photos=groups['photo'];groups['photo']=[{k:v for k,v in p.items() if k not in ('path','original_path')} for p in photos]
-    md='# ELEC270 学习记录\n\n来源：本机试点；延迟保持未自动推断。\n\n'
+    md='# '+code+' 学习记录\n\n来源：本机试点；延迟保持未自动推断。\n\n'
     for a in groups['attempt']:
-        md+=f'## {a["at"]} · {teaching.TOPICS[a["topic"]]["title"]}\n\n状态：{a["result"]["status"]}'+('（已撤回）' if not a['active'] else '')+'\n\n'+a['working']+'\n\n'+a['result']['feedback']+'\n\n'
+        md+=f'## {a["at"]} · {teaching.all_topics()[a["topic"]]["title"]}\n\n状态：{a["result"]["status"]}'+('（已撤回）' if not a['active'] else '')+'\n\n'+a['working']+'\n\n'+a['result']['feedback']+'\n\n'
         if a['photo_id']: md+=f'![[Photos/{a["photo_id"]}.jpg]]\n\n'
     if groups['guided-check']:
         md+='## 分步教学 / Guided learning\n\n讲解后的检查，不等于独立掌握。 / Guided checks do not establish independent mastery.\n\n'
@@ -402,14 +422,14 @@ def export(u=Depends(user)):
             md+=f'- {g["at"]} · {g["concept_id"]} · {g["language"]} · {g["mode"]} · '+('符合判据 / Check passed' if g['result']['passed'] else '待核对 / Needs review')+'\n'
     blob=io.BytesIO()
     with zipfile.ZipFile(blob,'w',zipfile.ZIP_DEFLATED) as z:
-        z.writestr('ELEC270 学习记录.md',md)
-        z.writestr('Maintenance/Learning/record.json',json.dumps(skill_record(groups, u.get('synthetic',False)),ensure_ascii=False,indent=2))
+        z.writestr(code+' 学习记录.md',md)
+        z.writestr('Maintenance/Learning/record.json',json.dumps(skill_record(groups, u.get('synthetic',False),code),ensure_ascii=False,indent=2))
         z.writestr('Maintenance/pilot-record-v1.json',json.dumps({'schema':'study-studio-pilot-v1','exported_at':store.now(),**groups},ensure_ascii=False,indent=2))
         for p in photos: z.write(p['path'],'Photos/'+p['id']+'.jpg')
         for p in groups['progress']: z.writestr('Notes/'+p['id']+'.md',p['notes'])
         for record in groups['legacy-session']: z.writestr('Maintenance/Legacy/'+record['id']+'.json',json.dumps(record,ensure_ascii=False,indent=2))
-        z.writestr('README.md','# ELEC270 个人导出\n\n可解压到单独的 Obsidian 文件夹。包含个人证据、照片与笔记，不含题目解答。原始 JSON 为 Pilot v1 格式，同时附带 Skill V1 格式的学习记录快照。')
-    return Response(blob.getvalue(),media_type='application/zip',headers={'Content-Disposition':'attachment; filename="ELEC270-learning-record.zip"'})
+        z.writestr('README.md','# '+code+' 个人导出\n\n可解压到单独的 Obsidian 文件夹。包含个人证据、照片与笔记，不含题目解答。原始 JSON 为 Pilot v1 格式，同时附带 Skill V1 格式的学习记录快照。')
+    return Response(blob.getvalue(),media_type='application/zip',headers={'Content-Disposition':f'attachment; filename="{code}-learning-record.zip"'})
 
 @router.delete('/my-data')
 def delete_data(u=Depends(user)):
@@ -445,10 +465,11 @@ def teaching_preferences(body:TeachingPreference,u=Depends(user)):
 
 @router.post('/learning/ramps/start')
 def start_guided(u=Depends(user)):
+    if catalog.code(current(u))!='ELEC270': fail(409,'此分步教学属于ELEC270。 / This guided lesson belongs to ELEC270.')
     with LOCK,store.engine.begin() as conn:
         s=store.fetch('guided-session',u['id'],'ramps',conn)
         if s is None:
-            c=current()
+            c=current(u)
             if not any(l['week']==1 for l in c['lessons']): fail(409,'缺少对应课程。 / Course unit missing.')
             route=(store.fetch('route',u['id'],'ramps',conn) or {}).get('route','visual')
             s=guided.new_session(c['id'],route)
@@ -510,7 +531,7 @@ def next_guided(body:GuidedNext,u=Depends(user)):
 
 @router.get('/learning/history')
 def guided_history(u=Depends(user)):
-    return sorted(store.listing('guided-check',u['id']),key=lambda r:r['at'])
+    return sorted(catalog.groups(u['id'],current(u))['guided-check'],key=lambda r:r['at'])
 
 from .workspace_routes import create_router
-router.include_router(create_router(user, required, fail, LOCK))
+router.include_router(create_router(user, required, fail, LOCK, current))

@@ -3,11 +3,11 @@ from datetime import datetime, timezone
 from . import teaching
 
 
-def overview(tasks, attempts, sessions, drafts, now=None):
+def overview(tasks, attempts, sessions, drafts, now=None, topics=None):
     now = now or datetime.now(timezone.utc)
     active = sorted((a for a in attempts if a['active']), key=lambda a: a['at'])
     rows=[]
-    for key, topic in teaching.TOPICS.items():
+    for key, topic in (topics if topics is not None else teaching.TOPICS).items():
         evidence=[a for a in active if a['topic']==key]
         latest=evidence[-1] if evidence else None
         topic_tasks=sorted((t for t in tasks if t['topic']==key),key=lambda t:t['created_at'])

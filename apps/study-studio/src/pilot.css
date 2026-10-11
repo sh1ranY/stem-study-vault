@@ -863,7 +863,8 @@
     font-size: 10px;
   }
   .pilot-course-name {
-    display: none;
+    display: block;
+    margin: 14px 0;
   }
   .pilot-sidebar nav {
     display: flex;
@@ -1086,3 +1087,7 @@
 
 .pilot-top { height: auto; min-height: 72px; padding-top: 12px; padding-bottom: 12px; }
 .pilot-top > span:not(.pilot-badge) { display:flex; gap:8px; align-items:center; }
+
+.pilot-course-name label { display:block; font-size:12px; font-weight:500; margin-bottom:8px; }
+.pilot-course-name select { width:100%; min-width:0; padding:10px 6px; border:1px solid #cbd5c7; border-radius:8px; background:#fff; font:inherit; font-size:13px; color:#243e32; }
+.pilot-numbers select { width:100%; padding:10px; border:1px solid #cbd5c7; border-radius:8px; background:#fff; font:inherit; }

@@ -1,126 +1,142 @@
-# Learning Studio
+# Study Studio · 本地学习空间
 
-## Current application: ELEC270 local pilot
+React 前端 + FastAPI 后端 + SQLite 数据库，将课程阅读、诊断、不同讲法、纸笔作答与个人记录接在一起。当前支持 **ELEC270、COMP201、COMP207**，可在左侧顶部「切换课程」中选择。
 
-The default entry is now a React / FastAPI learning app with local accounts, course import, SQLite storage, diagnosis, teaching, photo transcription, confirmed answers, feedback, private records and Obsidian export. Ramp construction includes a Chinese/English guided lesson with interactive graphs and checkpoint-based routing. See [PILOT.md](PILOT.md) for the current feature scope, configuration and limits.
+[English setup guide](GETTING_STARTED.en.md) · [仓库首页与 Skill](../../README.md) · [验证记录](VALIDATION.md) · [可选云端部署](DEPLOYMENT.md)
 
-This repository includes application code, schema migrations, authored examples and tests. **Personal databases, uploaded photos, API keys, Obsidian notes and university course originals are not distributed.** The database is created locally on first run; PostgreSQL is an optional, not yet integration-tested configuration. This is a local-only pilot, not a production hosting release.
+## 第一次体验：不需要私人资料或模型密钥
 
-### Start on a new machine
+1. 下载本仓库 ZIP 并解压，或 `git clone https://github.com/sh1ranY/stem-study-vault.git`。
+2. 安装 Python（推荐 3.12；兼容 3.9+）和 Node.js（推荐 22.12+，包含 npm）。首次安装需要联网下载依赖。
+3. 进入 `apps/study-studio`，运行演示启动器：
 
-Requirements: Python 3.10+ and Node.js 20.19+ / 22.12+. On macOS, configure your material locations in a local `.env` (use `.env.example` as a template), then run `./start.command`. The importer expects `10 Y2上学期/ELEC270 信号与系统/Weeks/*.md` inside your vault; provide `STUDIO_VAULT_ROOT` and `STUDIO_ELEC270_SOURCES` for your own files. Without that private course structure, use the manual setup below and open `http://127.0.0.1:8765/?prototype=1` to try the included original English sample. The sample does not require private materials or an API key.
+| 系统 | 启动方式 |
+|---|---|
+| macOS | 双击 `demo.command`；或终端运行 `python3 start.py --demo` |
+| Windows | 双击 `demo.cmd`；或 PowerShell 运行 `py -3 start.py --demo` |
+| Linux | 终端运行 `python3 start.py --demo` |
 
-For the default pilot, import course files with:
+浏览器会打开 **http://127.0.0.1:5177/**。保持启动窗口打开；按 Ctrl+C 停止。
+
+启动器自动建立虚拟环境、安装依赖、初始化数据库、加入三门原创演示课并构建网页。首次进入时，创建自己的本机账号（密码至少 10 位）。**不需要 Obsidian、学校课件、邀请码、OpenAI 密钥或云端账户。** 后续账号由本机所有者在设置中生成邀请码。
+
+演示模式使用独立的 `data-demo/`，关闭模型调用，不读取或导入你的知识库，不使用 `.env` 中的 API key 或数据库地址。它与普通本地版使用不同的会话 Cookie。内置内容是原创入门示例，不是大学官方课程或完整试卷。
+
+安装完成后，阅读、诊断、关键答案检查、手工录入、照片保存、笔记和导出都能离线运行。演示模式不会假装识别照片：上传后请手动输入过程与关键答案。
+
+## 五分钟体验路线
+
+1. 在左上角选择课程，例如 COMP207。
+2. 在「我的学习路线」点「检查当前起点」，或直接阅读讲义。
+3. 根据需要选择补基础、图示与直觉、规则与推导。ELEC270 的斜坡另有交互图形和三步引导教学。
+4. 写下解题过程，填写数值或选择答案。也可先纸笔作答，再上传 JPEG、PNG 或 WebP 照片（不超过 10 MB）。
+5. 核对过程与关键答案，勾选确认后提交。看过解答或用了外部帮助，请如实标记；提示后的同题改正不作为新题独立证据。
+6. 在「我的学习记录」回看反馈；在「设置与导出」导出**当前课程**的 ZIP。
+
+草稿自动保存，切换课程前还会保存当前单元笔记。关闭/刷新页面前请确认草稿显示已保存；一般讲义切换前用「保存并记住当前位置」保存笔记。切换课程不会清空其他课程的记录。
+
+右上角可切换简体中文与 English；界面、原创练习与演示讲义支持双语。导入的个人资料保留原语言，不会自动翻译。选择教学路径不会把你归类为固定的学习风格。
+
+## 当前课程覆盖
+
+| 课程 | 内置可检查主题 | 自己导入后 |
+|---|---|---|
+| ELEC270 · 信号与系统 | 斜坡构造、矩形卷积、Fourier 归一化 | 阅读与搜索自己的各单元及课件 |
+| COMP201 · 软件工程 I | 需求与验收条件、Petri 网、边界值测试 | 阅读与搜索软件过程、需求、设计、测试等原知识库内容 |
+| COMP207 · 数据库开发 | JOIN 与 COUNT、WHERE/GROUP BY/HAVING、冲突可串行化 | 阅读与搜索关系模型、事务、恢复、分布式等原知识库内容 |
+
+每个主题包含诊断、新练习与复查题，每类最多 24 个有界变式；变式不等同于考核覆盖或教学难度递进。自动判据只检查指定答案；自由文字、任意 SQL、程序、类图与完整证明不在确定性自动评分范围内。AI 过程反馈是另外标注的建议，不能据此认证整门课掌握或长期保持。
+
+## 正常本地使用与可选 AI
+
+运行 `python3 start.py`（Windows：`py -3 start.py`），或双击 `start.command` / `start.cmd`。普通本地版地址为 **http://127.0.0.1:8765/**，默认数据在 `data/`；已有课程和学习记录会保留，仅为尚未安装的课程加入演示。
+
+如果需要真实照片识别与 AI 过程反馈：
+
+1. 仅当 `.env` 尚不存在时，将 `.env.example` 复制为 `.env`。
+2. 在本机填写 `OPENAI_API_KEY` 与你账号可用、支持图像及结构化输出的 `STUDIO_VISION_MODEL`。
+3. 停止并重新启动普通本地版。不要使用 `--demo`，它会强制关闭 AI。
+
+密钥只留在后端，不写进浏览器变量、聊天或 Git。只有主动点击照片转写/AI反馈时才发起模型请求，课程导入不会调用模型。每次操作最多一次请求，不自动重试；默认每账号每天 UTC 30 次调用。这不是金额上限，API 使用可能产生费用。识别后仍需本人确认。
+
+## 接入自己的 Obsidian 课程
+
+先完成正常本地启动并停止服务。准备下面的目录；`Weeks/` 可以包含学年子目录，讲义文件建议命名为 `Week 01 - 标题.md`。
+
+```text
+自己的课程/
+  Weeks/
+    Week 01 - 标题.md
+    Week 02 - 标题.md
+  Sources/                  # 可选 PDF/PPTX/DOCX 等附件
+  Practice/                 # 可选旧错题记录（不计入掌握证据）
+```
+
+macOS / Linux（Windows 把 `.venv/bin/python` 换成 `.venv\Scripts\python.exe`）：
 
 ```sh
-.venv/bin/python -m alembic upgrade head
-.venv/bin/python -m backend.pilot.import_course --vault /path/to/Obsidian --desktop /path/to/ELEC270-materials
+.venv/bin/python -m backend.pilot.import_course --course COMP201 --course-root "/absolute/path/to/自己的课程" --desktop "/absolute/path/to/原课件"
 ```
 
-The guided lesson and numerical checks run locally. Optional photo recognition and AI process feedback use `OPENAI_API_KEY` plus `STUDIO_VISION_MODEL`; keep `.env` private. The rest of this README documents the preserved original prototype at `/?prototype=1`.
+`--course` 可选 `ELEC270`、`COMP201`、`COMP207`。`--desktop` 可省略；省略时仅尝试本机 `~/Desktop/<课程代码> 课程资料`，不存在也可只导入 Markdown。
 
-## Original prototype
-
-A local, English-language prototype of the STEM Study Vault learning loop. Built for an academic discussion, with an original ELEC270 Week 1 signal-construction unit.
-
-**Run on macOS:** double-click `start.command`, then open **http://127.0.0.1:8765**. Keep its terminal window open during the demonstration. The first setup on another machine requires Python 3.10+, Node 20.19+ / 22.12+, and internet access to install dependencies. Subsequent prepared demonstrations work offline. Dependencies are isolated inside this app.
-
-## What works now
-
-- Import PDF, PPTX, Markdown or UTF-8 text; inspect extracted pages and download the original. Limit: three files per unit, 10 MB each, 60 pages/slides, 60,000 text characters per file.
-- Read three connected English sections, rendered mathematics and an interactive ramp comparison.
-- Submit numerical answers, a reasoning choice, a written key step and confidence.
-- Receive different authored support for substitution errors, slope/height confusion and construction errors.
-- Open graduated support or a worked answer; attempt up to six distinct fresh constructions.
-- Inspect the six evidence dimensions, withdraw an incorrect observation, save notes and resume after refresh or restart.
-- Export a usable Obsidian folder with lessons, exercises, folded answers, an original SVG, personal notes, source material and the complete learning record.
-
-**No API key is needed for this flow.** Prepared teaching is not generated from uploaded files. Those files are retained as separately labelled references. The application says so at import and in Sources & scope.
-
-## Two explicitly separate modes
-
-| Mode | Teaching | Assessment | Network use |
-| --- | --- | --- | --- |
-| Prepared ELEC270 | Original authored unit and support branches | Deterministic numerical and selected-reason checks | None |
-| Optional uploaded-source draft | One server-side model request over extracted source text | No reviewed task pack; no invented assessment | Configured OpenAI or DeepSeek API |
-
-The live adapter has contract tests with mocked responses. **This legacy source-draft adapter has not been tested against a real provider.** The newer pilot photo/feedback adapter has a separate validation record. General AI tutoring, automatic assessment-pack generation and complete-course generation are outside this prototype. The sample covers a focused part of Week 1, not the full lecture.
-
-## A ten-minute demonstration
-
-See [DEMO.md](DEMO.md) for the English walkthrough, exact example answers and questions for the professors. Open a new sample from **My workspace → Open sample unit** for a clean demonstration. Existing records are not reset.
-
-The development walkthrough stored on this computer is a scripted developer test, **not student evidence**. Its personal note states this. Do not present its attempts as validation of learning effectiveness.
-
-## Architecture and evidence
-
-React + TypeScript provide the reading workspace. A local FastAPI service extracts source text, applies deterministic checks, records events and exports Markdown. SQLite stores sessions and imported-source metadata. Raw imports live in the ignored `data/` directory.
-
-```mermaid
-flowchart LR
-    Files[Local course files] --> Extract[Text extraction and preview]
-    Extract --> References[Attached references]
-    Extract -->|Optional explicit generation| Model[Server-side provider adapter]
-    Pack[Original ELEC270 teaching and task pack] --> Lesson[Reading workspace]
-    Model --> Draft[Source-linked lesson draft]
-    Lesson --> Attempt[Answer, key step and confidence]
-    Attempt --> Check[Narrow numerical and reason-choice checks]
-    Check --> Support[Targeted support or fresh task]
-    Support --> Attempt
-    Attempt --> Record[SQLite attempts and exposure events]
-    Lesson --> Record
-    Record --> Export[Obsidian export]
-```
-
-The current implementation translates source-linked teaching and evidence discipline into an interface. It does **not** yet run the entire repository Skill as an agent. It does not infer IQ, fixed learning styles, personality or a general ability score. Nuwa-inspired evidence-to-teaching adaptation is represented by revisable, task-specific observations, not a personality clone.
-
-A correct checkpoint is **guided/supported**. A first correct fresh construction without recorded task-specific exposure is an **independent task check**, limited to the numerical fields and selected explanation. It is near transfer within one task family; it does not establish broad transfer or mastery. Written explanations are stored but not semantically graded. Delayed retention is unassessed.
-
-Hints, answers, previous attempts, general help for already opened tasks, and exporting worked answers count as exposure. Withdrawing an observation removes it from current claims without erasing exposure history. Reading progress is distinct from understanding. A student can continue without passing a gate.
-
-## Optional model configuration
-
-Copy `.env.example` to `.env` inside this directory. Set a provider, a model identifier supported by that provider's Chat Completions JSON mode, and that provider's API key. Restart the server. Never place a key in frontend code or commit `.env`.
-
-One explicit generation sends extracted text to the provider. There is one bounded request, a 6,000-token output cap, a 90-second timeout and no automatic retries. Rejected or timed-out calls may still incur provider charges. This is a request cap, not a monetary billing system. No subscription, credits or payments are implemented.
-
-The model response must pass a structural schema and exact source-ID checks. This does not prove that its claims faithfully follow those sources. Incomplete or invalid responses do not create a lesson. Prompt injection in uploaded documents is treated as untrusted source data; the model has no tools. Generated HTML and embedded images are not rendered.
-
-Provider interface references: [OpenAI Chat Completions](https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create), [DeepSeek JSON output](https://api-docs.deepseek.com/guides/json_mode/).
-
-## Development
+如果知识库使用本项目原有目录约定，也可以：
 
 ```sh
-python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt
-npm ci
-npm run build
-.venv/bin/python -m uvicorn backend.app:app --host 127.0.0.1 --port 8765
+.venv/bin/python -m backend.pilot.import_course --course COMP207 --vault "/absolute/path/to/Obsidian" --desktop "/absolute/path/to/COMP207资料"
 ```
 
-For frontend development, run `npm run dev` alongside the backend; Vite uses port 5177 and proxies `/api` to 8765. Production builds include KaTeX fonts locally, without a CDN. One worker only: session updates use a process-local lock.
+对应路径为 `10 Y2上学期/ELEC270 信号与系统`、`10 Y2上学期/COMP201 软件工程 I`、`10 Y2上学期/COMP207 数据库开发`。查看命令输出的单元数、附件数和链接警告，重启服务后选择课程。
+
+导入只读取原件，附件复制到应用自己的数据目录；同一内容重复导入不会创建重复版本。新导入替换该课程的当前版本，已有题目继续引用原版本，其他课程不受影响。导入器支持本项目常用的 Wiki 链接/嵌入/提示框，不是完整 Obsidian 解析器。`hint`、`solution`、`answer`、`success` 等指定提示框可单独展开；普通正文或下载的原件仍可能含答案，不能把隐藏提示框视为全面答案检测。
+
+**导入自己的文件不等于自动生成新课程的诊断题库。** 任意科目、自助建课与自动题库编写尚未提供；当前自动检查仍限定上述九个原创主题。需要先生成系统讲义时，可使用仓库中的 [stem-study-vault Skill](../../skills/stem-study-vault/SKILL.md)。
+
+## 数据与备份
+
+- `data/`：本地课程副本、数据库、笔记、作答、照片。`data-demo/`：演示账号与记录。两者及 `.env` 都被 Git 和容器构建排除。
+- 学习记录按账号保存，课程选择按账号记忆；每个浏览器页的课程请求有明确课程代码，避免多页切换混淆。
+- 「导出」只包含当前课程，含 Obsidian Markdown、照片、原始 JSON 与 Skill V1 学习记录，不包含题目解答。清空账号前分别导出需要的课程。
+- 「删除我的数据」会删除该账号**所有课程**的个人记录，保留账号与共享课程。
+- 完整备份请在服务停止时运行：
+
+```sh
+.venv/bin/python -m backend.backup create --data data --output /absolute/path/private-backup.zip
+.venv/bin/python -m backend.backup restore --archive /absolute/path/private-backup.zip --destination /absolute/path/restored-data
+```
+
+恢复要求一个尚不存在的目录。之后把 `.env` 的 `STUDIO_DATA_DIR` 指向恢复目录；若原来配置过 `STUDIO_DATABASE_URL`，同步修改或删除该项，再重新启动。恢复后需要重新登录。备份包含私人资料，请勿提交到公开仓库。该备份命令针对 SQLite；PostgreSQL 需要独立备份方案。
+
+## 常见问题
+
+- **提示没有 Python/npm**：安装对应运行环境，再打开新的终端重试。Windows 使用 `py -3`；只有 `python` 命令时可直接运行 `python start.py --demo`。
+- **macOS 不允许双击启动**：可在终端进入此目录，执行 `python3 start.py --demo`。
+- **端口被占用**：先停止旧启动窗口，再启动新版本。程序不会悄悄沿用旧服务。
+- **安装失败**：保留终端报错，检查网络连接；下次运行会重试尚未完成的安装。
+- **AI待配置**：演示模式下是预期行为。照片和手工作答仍可用。
+- **手机打不开 127.0.0.1**：它指向手机自己。这一版只监听当前电脑，未启用跨设备托管。
+- **更新后看不到切换入口**：停止旧服务，重新运行启动器并刷新页面。
+
+## 开发与架构
+
+```text
+src/                         React UI、课程选择、阅读、草稿、记录
+backend/pilot/catalog.py      课程注册、选课、按课程筛选记录
+backend/pilot/import_course.py 只读导入与版本化附件
+backend/pilot/demo_course.py  三门原创演示种子，不覆盖导入内容
+backend/pilot/teaching.py     ELEC270 判据与统一题目接口
+backend/pilot/computing.py    COMP201 / COMP207 双语内容与判据
+backend/pilot/localization.py 展示翻译，保持题目/证据身份
+backend/pilot/routes.py       登录、课程、作答、照片、导出 API
+backend/pilot/store.py        SQLAlchemy 记录存储；本地默认 SQLite
+```
 
 ```sh
 .venv/bin/python -m unittest discover -s tests -v
 npm run build
+python3 start.py --demo --prepare-only
 ```
 
-Tests use temporary storage, mocked provider calls and original fixtures, never the live workspace or paid API. See [VALIDATION.md](VALIDATION.md) for the observed result and limits.
+测试隔离数据库并模拟模型响应。SQL 题的判据另外对照实际 SQLite 查询结果；测试通过不证明 AI 转写质量或教学有效性。Windows 启动脚本已提供，但本轮现场验证平台为 macOS，Linux 由 CI 验证，Windows 仍需原生环境试用。
 
-## Storage and deployment boundary
-
-`data/studio.sqlite3` contains local notes, attempts, extracted text and generation records. Originals are stored beside it. Back up `data/` with the server stopped if you need a full local backup; export gives portable learning content but is not yet an importable application backup. Deleting a unit retains independently imported originals. There is no remote telemetry.
-
-This is a single-user loopback prototype, not a deployable student portal. Do not bind it to a public interface. Authentication, account isolation, encrypted hosted storage, source-image/OCR processing, multi-worker transaction design, a validated open-response evaluator and study consent/data governance require separate implementation before a student pilot. Browser tabs on this one local workspace do not have concurrent-edit conflict resolution. Unsubmitted answer drafts are not persisted; submitted attempts and saved notes are.
-
-## ELEC270 第一版（2026-10-10）
-
-默认入口现在是 ELEC270 试点，见 [PILOT.md](PILOT.md)。原始演示入口保留在 `/?prototype=1`。新功能包括真实课程导入、独立账号、三主题诊断/反馈、照片与确认、学习记录及 Skill V1 导出。模型未配置时可用数值检查和手动转录；自动识别与 AI 过程反馈须配置后实测。
-
-## Invited-pilot milestone (11 October 2026)
-
-The primary interface, authored tasks for all three pilot topics, deterministic feedback, hints and examples now support Chinese/English. Language is saved to the account. Source documents and learner writing remain in their original language; historical evidence is retained. AI feedback is requested in the chosen language; multilingual AI quality has only mock-contract coverage so far.
-
-The new study-plan page suggests continuing an unfinished problem, revisiting an error, trying fresh practice or a due review. Suggestions do not certify mastery or retention. Answer drafts autosave separately from attempts, resume after refresh, detect conflicting edits and are included in raw personal export. Guided checkpoint inputs and unsaved personal notes are still distinct from these practice-answer drafts.
-
-For the prepared shared-URL deployment path, exact user login/billing handoff, hosted limits and the backup/restore drill, see [DEPLOYMENT.md](DEPLOYMENT.md). `render.yaml` and the Dockerfile prepare a small single-process invitation pilot. No cloud service has been created or charged by this change. The initial cloud seed contains only distributable authored material, not the local private course.
+保留的早期原型位于 `/?prototype=1`，账号建立后仅所有者可访问；它不是多课程主入口。云端配置保留供以后使用，本地启动不会自动部署、开通付费服务或建立计费。PostgreSQL/Supabase 并未作为本次已验证的部署方案。

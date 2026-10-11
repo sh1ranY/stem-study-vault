@@ -17,7 +17,7 @@ import {
   Settings,
   ShieldCheck,
 } from "lucide-react";
-import { api, post } from "./api";
+import { api, post, setApiCourse } from "./api";
 import "./pilot.css";
 
 import type {
@@ -39,15 +39,15 @@ export default function Pilot() {
   const { t: tr, language, setLanguage } = useLocale();
   const routeNames: Record<string, string> = {
     bridge: tr("补一点基础"),
-    visual: tr("图形与直觉"),
-    algebra: tr("代数与推导"),
+    visual: language === "en" ? "Examples & intuition" : "图示与直觉",
+    algebra: language === "en" ? "Rules & reasoning" : "规则与推导",
   };
   const statusNames: Record<string, string> = {
     unknown: tr("尚未检查"),
     needs_review: tr("需要再核对"),
-    independent: tr("新题独立数值检查通过"),
+    independent: tr("新题独立检查通过"),
     supported: tr("在帮助后检查通过"),
-    diagnostic_match: tr("诊断数值符合判据"),
+    diagnostic_match: tr("诊断答案符合判据"),
   };
   const fmt = (s: string) =>
     new Date(s).toLocaleString(language, {
@@ -60,6 +60,7 @@ export default function Pilot() {
   const [status, setStatus] = useState<Status | null>(null),
     [course, setCourse] = useState<Course | null>(null),
     [state, setState] = useState<State | null>(null);
+  const [courses, setCourses] = useState<{code:string;title:string;mode:string}[]>([]);
   const draftRef = useRef<DraftHandle>(null);
   const submission = useRef({ signature: "", id: newId() });
   const [view, setView] = useState("home"),
@@ -111,14 +112,14 @@ export default function Pilot() {
     setState(s);
     return s;
   }
-  async function loadLesson(id: string, s?: State) {
+  async function loadLesson(id: string, s?: State, c = course) {
     const l = await api<Lesson>(p + "/lessons/" + id);
     setLesson(l);
     if (s || lesson?.id !== id) {
       const saved = s || state;
       setNotes(saved?.progress.find((x) => x.id === id)?.notes || "");
-      if (l.week >= 1 && l.week <= 3) {
-        const key = ["ramps", "convolution", "fourier"][l.week - 1];
+      const key = Object.keys(c?.topics || {}).find(k => c?.topics[k].week === l.week);
+      if (key) {
         setTopic(key);
         setRoute(saved?.summaries[key]?.route || "visual");
         const currentTask = [...(saved?.tasks || [])]
@@ -177,12 +178,16 @@ export default function Pilot() {
     if (st.user) setLanguage(st.language || "zh-CN");
     setStatus(st);
     if (st.user && st.course_ready) {
+      const catalog = await api<{active:string;courses:{code:string;title:string;mode:string}[]}>(p+"/courses");
+      setCourses(catalog.courses);
+      setApiCourse(catalog.active);
       const [c, s] = await Promise.all([
         api<Course>(p + "/course"),
         api<State>(p + "/state"),
       ]);
       setCourse(c);
       setState(s);
+      setTopic(Object.keys(c.topics)[0]);
       const requested = new URLSearchParams(location.search).get("lesson");
       const latest = [...s.progress].sort((a, b) =>
         b.at.localeCompare(a.at),
@@ -192,8 +197,8 @@ export default function Pilot() {
         ? c.lessons.find((l) => l.week === c.topics[lastTask.topic].week)
         : undefined;
       await loadLesson(
-        requested || latest?.id || taskLesson?.id || c.lessons[0].id,
-        s,
+        [requested, latest?.id, taskLesson?.id].find(id => c.lessons.some(l => l.id === id)) || c.lessons[0].id,
+        s, c,
       );
     }
   }
@@ -210,7 +215,7 @@ export default function Pilot() {
   }, [lesson?.id]);
   useEffect(() => {
     let active = true;
-    if (status?.user)
+    if (status?.user && course?.topics[topic])
       api<{ body: string; example: string }>(
         p + "/teaching/" + topic + "?route=" + route,
       )
@@ -223,7 +228,7 @@ export default function Pilot() {
     return () => {
       active = false;
     };
-  }, [topic, route, status?.user?.id, language]);
+  }, [topic, route, status?.user?.id, language, course?.id]);
   async function selectTopic(key: string) {
     setTopic(key);
     setRoute(state?.summaries[key]?.route || "visual");
@@ -310,6 +315,9 @@ export default function Pilot() {
       setLanguage(value);
       const [c, s] = await Promise.all([api<Course>(p + "/course"), refresh()]);
       setCourse(c);
+      const list=await api<{courses:{code:string;title:string;mode:string}[]}>(p+"/courses");
+      setCourses(list.courses);
+      if (lesson) setLesson(await api<Lesson>(p+"/lessons/"+lesson.id));
       if (task) {
         setTask(s.tasks.find((x) => x.id === task.id) || task);
         setAttempt(s.attempts.find((x) => x.id === attempt?.id) || null);
@@ -393,7 +401,7 @@ export default function Pilot() {
           <div className="pilot-wordmark">
             <Leaf /> STUDY VAULT
           </div>
-          <span className="pilot-eyebrow">{tr("ELEC270 · 信号与系统")}</span>
+          <span className="pilot-eyebrow">{language === "en" ? "Three courses · Your own learning space" : "三门课程 · 你的学习空间"}</span>
           <h1>
             {tr("让每一步学习，")}
             <br />
@@ -468,7 +476,7 @@ export default function Pilot() {
               </label>
             )}
             <button className="pilot-primary" disabled={!!busy}>
-              {busy || tr("进入 ELEC270")} <ChevronRight size={16} />
+              {busy || (language === "en" ? "Enter learning space" : "进入学习空间")} <ChevronRight size={16} />
             </button>
             {!status.setup_required && (
               <button
@@ -499,7 +507,7 @@ export default function Pilot() {
     );
   const currentTopic = course?.topics[topic];
   const disabled = !!busy;
-  const supportedLesson = !!lesson && lesson.week >= 1 && lesson.week <= 3;
+  const supportedLesson = !!lesson && lesson.week === currentTopic?.week;
   return (
     <div className="pilot-shell">
       <aside className="pilot-sidebar">
@@ -507,7 +515,20 @@ export default function Pilot() {
           <Leaf /> STUDY VAULT
         </div>
         <div className="pilot-course-name">
-          ELEC270<small>{tr("信号与系统 · 2026–27")}</small>
+          <label htmlFor="course-picker">{language === "en" ? "Course" : "切换课程"}</label>
+          <select id="course-picker" value={course?.code || ""} disabled={disabled} onChange={e => {
+            const code=e.target.value;
+            void run(language === "en" ? "Switching course" : "切换课程", async () => {
+              if (lesson && notes !== (state?.progress.find(x => x.id === lesson.id)?.notes || "")) {
+                await api(p+"/progress", {method:"PATCH",body:JSON.stringify({lesson_id:lesson.id,notes})});
+              }
+              await post(p+"/courses/select",{code});
+              location.assign(location.pathname+"?course="+encodeURIComponent(code));
+            });
+          }}>
+            {courses.map(c => <option key={c.code} value={c.code}>{c.title}</option>)}
+          </select>
+          <small>{course?.mode === "demo" ? (language === "en" ? "Original demo · no private materials" : "原创演示 · 不含私人资料") : (language === "en" ? "Imported local course" : "已接入本地课程资料")}</small>
         </div>
         <nav>
           {[
@@ -551,10 +572,7 @@ export default function Pilot() {
                 void run(tr("读取讲义"), async () => {
                   setView("learn");
                   await loadLesson(l.id);
-                  if (l.week >= 1 && l.week <= 3)
-                    await selectTopic(
-                      ["ramps", "convolution", "fourier"][l.week - 1],
-                    );
+
                 })
               }
             >
@@ -591,7 +609,7 @@ export default function Pilot() {
           />
           <span>
             {tr("我的课程")}
-            <ChevronRight size={14} /> ELEC270
+            <ChevronRight size={14} /> {course?.code}
           </span>
           <span className="pilot-badge">
             {status.model_available
@@ -619,11 +637,12 @@ export default function Pilot() {
         )}
         {!course ? (
           <section className="pilot-page">
-            <h1>{tr("等待导入 ELEC270")}</h1>
+            <h1>{language === "en" ? "Waiting for course setup" : "等待安装课程"}</h1>
             <p>{tr("课程导入完成后刷新即可开始。")}</p>
           </section>
         ) : view === "home" ? (
           <LearningOverview
+            key={course.id}
             course={course}
             version={(state?.attempts.length || 0) + (state?.tasks.length || 0)}
             disabled={disabled}
@@ -722,13 +741,11 @@ export default function Pilot() {
                 )}
                 <details className="pilot-full-lesson" open>
                   <summary>
-                    <BookOpen size={18} /> {tr("原知识库讲义 ·")}
+                    <BookOpen size={18} /> {course.mode === "demo" ? (language === "en" ? "Original demo notes · " : "原创演示讲义 · ") : tr("原知识库讲义 ·")}
                     {lesson?.title}
                   </summary>
                   <p className="pilot-muted">
-                    {tr(
-                      "正文保留原课程结构。提示和解答需单独展开；展开会记入学习记录。",
-                    )}
+                    {course.mode === "demo" ? (language === "en" ? "Original examples for this starter topic. They do not replace a full course textbook." : "本主题的原创入门示例，不替代整门课程教材。") : tr("正文保留原课程结构。提示和解答需单独展开；展开会记入学习记录。")}
                   </p>
                   {lesson?.blocks.map((b) => (
                     <div id={b.id} key={b.id}>
@@ -926,7 +943,10 @@ export default function Pilot() {
                       {task.fields.map((f) => (
                         <label key={f.id}>
                           {f.label}
-                          <input
+                          {f.choices ? <select aria-label={f.label} value={answers[f.id] || ""} onChange={e => {setAnswers({...answers,[f.id]:e.target.value});setConfirmed(false);}}>
+                            <option value="">{language === "en" ? "Choose an answer" : "请选择"}</option>
+                            {f.choices.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
+                          </select> : <input
                             aria-label={f.label}
                             value={answers[f.id] || ""}
                             onChange={(e) => {
@@ -937,7 +957,7 @@ export default function Pilot() {
                               setConfirmed(false);
                             }}
                             placeholder={tr("数值或简单算式")}
-                          />
+                          />}
                           {attempt && (
                             <small
                               className={
@@ -1045,7 +1065,7 @@ export default function Pilot() {
                         {!status.model_available && (
                           <small>
                             {tr(
-                              "AI 过程反馈待配置；上面的数值检查已实际完成。",
+                              "AI 过程反馈待配置；上面的答案检查已实际完成。",
                             )}
                           </small>
                         )}
@@ -1090,7 +1110,7 @@ export default function Pilot() {
               {tr("每个判断，都能回到一次作答")}
             </span>
             <h1>{tr("我的学习记录")}</h1>
-            <GuidedHistory />
+            {course.code === "ELEC270" && <GuidedHistory />}
             <div className="pilot-stat-grid">
               {Object.entries(course.topics).map(([k, t]) => (
                 <div key={k}>
@@ -1099,7 +1119,7 @@ export default function Pilot() {
                   <small>
                     {state?.summaries[k]?.attempts || 0} {tr("次有效作答 ·")}{" "}
                     {state?.summaries[k]?.independent || 0}{" "}
-                    {tr("次新题独立数值检查")}
+                    {tr("次新题独立检查")}
                   </small>
                 </div>
               ))}
@@ -1342,11 +1362,11 @@ export default function Pilot() {
                 {course.id}
                 {tr("。学习证据按账号保存；关闭浏览器后可继续。")}
               </p>
-              <a className="pilot-primary" href="/api/pilot/export">
+              <a className="pilot-primary" href={"/api/pilot/export?course="+course.code}>
                 {tr("导出到 Obsidian（ZIP）")}
               </a>
               <p className="pilot-muted">
-                {tr("包含个人笔记、作答、照片与结构化证据；不会覆盖原知识库。")}
+                {language === "en" ? "Exports this course’s notes, work, photos and evidence. Export each course separately before clearing all account data." : "导出当前课程的笔记、作答、照片与证据。清空账号前，请分别导出各门课程。"}
               </p>
             </div>
             <div className="pilot-settings-card">
@@ -1416,7 +1436,7 @@ export default function Pilot() {
               <h2>{tr("清空我的学习数据")}</h2>
               <p>
                 {tr(
-                  "删除当前账号的作答、照片、笔记与模型记录，保留账号和共享课程。",
+                  "删除当前账号所有课程的作答、照片、笔记与模型记录，保留账号和共享课程。",
                 )}
               </p>
               <label className="pilot-checkbox">

@@ -1,3 +1,5 @@
+let apiCourse = new URLSearchParams(location.search).get("course") || "";
+export function setApiCourse(value: string) { apiCourse = value; }
 let apiLanguage = "zh-CN";
 export function setApiLanguage(value: string) {
   apiLanguage = value;
@@ -12,6 +14,7 @@ export async function api<T>(
       ...options,
       headers: {
         "Accept-Language": apiLanguage,
+        ...(apiCourse ? { "X-Study-Course": apiCourse } : {}),
         ...(options.body instanceof FormData
           ? {}
           : { "Content-Type": "application/json" }),

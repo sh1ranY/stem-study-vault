@@ -1,7 +1,7 @@
 """Bounded, authored ELEC270 task families. Model prose never changes numeric verdicts."""
 import copy
 import math
-from . import store
+from . import store, computing
 from ..assessment import numeric
 
 TOPICS = {
@@ -26,10 +26,19 @@ TOPICS = {
 }
 
 
+def topics(code='ELEC270'):
+    return TOPICS if code == 'ELEC270' else computing.topics(code)
+
+
+def all_topics():
+    return {**TOPICS, **computing.topics()}
+
+
 def field(id, label, answer, route): return {'id':id,'label':label,'answer':answer,'route':route}
 
 def task(topic, phase, number=0):
     """Different integer parameters across repeats; identity stable across sessions/imports."""
+    if topic in computing.PACKS: return computing.task(topic, phase, number)
     if topic not in TOPICS or phase not in ('diagnosis','practice','review'): raise ValueError('未知题目类型。')
     if not 0 <= number < 24: raise ValueError('这组已核查参数已用完，请复习记录或选择其他主题。')
     d = phase=='diagnosis'; k=number+1+(24 if phase=='review' else 0); key=f'elec270:{topic}:v1:{phase}:{number}'
@@ -70,6 +79,6 @@ def evaluate(t, answers, exposure, prior):
     route=bad['route'] if bad else 'algebra';passed=all(checks.values())
     status=('diagnostic_match' if t['phase']=='diagnosis' else 'supported' if exposure or prior else 'independent') if passed else 'needs_review'
     return {'checks':checks,'passed':passed,'status':status,'route':route,'focus':bad['label'] if bad else None,
-            'feedback':f'先核对「{bad["label"]}」。这可能是计算、读题或概念上的问题；仅凭一次作答不作永久分类。' if bad else '本题关键数值均符合判据。接下来用不同参数检查迁移；这不等于已经掌握整个主题。',
-            'teaching':TOPICS[t['topic']]['routes'][route],
-            'scope':'数值判据已检查；自由解题过程另由 AI 提供建议或保留待核查。','retention':'unassessed'}
+            'feedback':f'先核对「{bad["label"]}」。这可能是计算、读题或概念上的问题；仅凭一次作答不作永久分类。' if bad else '本题关键答案均符合判据。接下来用不同参数检查迁移；这不等于已经掌握整个主题。',
+            'teaching':all_topics()[t['topic']]['routes'][route],
+            'scope':'指定答案判据已检查；自由解题过程另由 AI 提供建议或保留待核查。','retention':'unassessed'}

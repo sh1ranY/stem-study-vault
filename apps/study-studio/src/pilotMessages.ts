@@ -5,9 +5,9 @@ export const english = {
   代数与推导: "Algebra and derivation",
   尚未检查: "Not checked yet",
   需要再核对: "Needs another look",
-  新题独立数值检查通过: "Fresh problem: numerical checks passed independently",
+  新题独立检查通过: "Fresh problem: answer checks passed independently",
   在帮助后检查通过: "Checks passed with support",
-  诊断数值符合判据: "Diagnostic values meet the criteria",
+  诊断答案符合判据: "Diagnostic answers meet the criteria",
   正在载入课程: "Loading course",
   "照片已保存。识别或手动录入后，请确认关键公式与数值。":
     "Photo saved. After transcription or manual entry, confirm the key formulas and values.",
@@ -111,8 +111,8 @@ export const english = {
   "03 / 反馈与下一步": "03 / Feedback and next step",
   分析解题过程: "Reviewing your working",
   "让 AI 检查我的解题过程": "Ask AI to review my working",
-  "AI 过程反馈待配置；上面的数值检查已实际完成。":
-    "AI process feedback is not configured. The numerical checks above have been completed.",
+  "AI 过程反馈待配置；上面的答案检查已实际完成。":
+    "AI process feedback is not configured. The answer checks above have been completed.",
   "AI 建议 · 可核对": "AI suggestion · verify it",
   建议: "Review after",
   "后用新参数复查；完成复查前，延迟保持情况仍未知。":
@@ -120,7 +120,7 @@ export const english = {
   用另一道题检查理解: "Test your understanding with another problem",
   "每个判断，都能回到一次作答": "Every judgement links back to your work",
   "次有效作答 ·": "active attempts ·",
-  次新题独立数值检查: "fresh independent numerical checks",
+  次新题独立检查: "fresh independent answer checks",
   "尚无诊断或练习作答。分步教学小检查单独显示在上方；原库笔记不会替代作答证据。":
     "No diagnostic or practice attempts yet. Guided checks appear separately above; imported notes are not evidence of an attempt.",
   "（已撤回）": "(withdrawn)",
@@ -186,8 +186,8 @@ export const english = {
   创建邀请: "Creating invitation",
   生成一次性邀请码: "Generate a single-use invitation",
   清空我的学习数据: "Clear my learning data",
-  "删除当前账号的作答、照片、笔记与模型记录，保留账号和共享课程。":
-    "Delete this account’s answers, photos, notes and model records. Keep the account and shared course.",
+  "删除当前账号所有课程的作答、照片、笔记与模型记录，保留账号和共享课程。":
+    "Delete this account’s answers, photos, notes and model records across all courses. Keep the account and shared courses.",
   我确认要删除这些个人数据:
     "I confirm that I want to delete this personal data",
   删除个人数据: "Deleting personal data",

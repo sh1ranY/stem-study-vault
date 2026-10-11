@@ -42,7 +42,7 @@ class WorkspaceTests(unittest.TestCase):
         t=self.make();a=self.submit(t).json();self.english()
         self.assertEqual(self.client.get('/api/pilot/status').json()['language'],'en')
         self.assertEqual(self.client.get('/api/pilot/course').json()['topics']['ramps']['title'],'Basic signals and ramp construction')
-        s=self.state();self.assertEqual(s['tasks'][0]['id'],t['id']);self.assertIn('All key numerical',s['attempts'][0]['result']['feedback'])
+        s=self.state();self.assertEqual(s['tasks'][0]['id'],t['id']);self.assertIn('All checked answers',s['attempts'][0]['result']['feedback'])
         self.assertEqual(store.fetch('attempt',self.owner,a['id'])['language'],'zh-CN')
         self.assertIn('本题',store.fetch('attempt',self.owner,a['id'])['result']['feedback'])
         self.assertIn('Handle',self.client.post('/api/pilot/reveal',json={'task_id':t['id'],'kind':'hint'}).json()['body'])
@@ -51,7 +51,7 @@ class WorkspaceTests(unittest.TestCase):
     def test_english_submission_and_idempotency(self):
         self.english();t=self.make('convolution');a=self.submit(t).json()
         self.assertEqual(a['language'],'en');self.assertEqual(a['result']['status'],'independent')
-        self.assertIn('All key numerical',a['result']['feedback']);self.assertEqual(self.submit(t).json()['result'],a['result'])
+        self.assertIn('All checked answers',a['result']['feedback']);self.assertEqual(self.submit(t).json()['result'],a['result'])
 
     def test_draft_restore_privacy_and_no_evidence(self):
         t=self.make();saved=self.draft(t).json();self.assertEqual(saved['revision'],1)
