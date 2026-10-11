@@ -4,7 +4,7 @@ const zh = {
   title: "一步一步构造信号",
   subtitle: "讲解 → 小检查 → 补讲或继续 → 新题验证",
   language: "教学语言 / Lesson language",
-  scope: "中英切换仅覆盖本分步教学单元；原始课件及其他页面保留原文。",
+  scope: "界面与试点练习支持中英切换；原始课件和个人作答保留原文。",
   start: "开始分步学习",
   intro:
     "先把三个小目标逐个弄清楚。你可以随时换一种讲法；进度按账号保存，不会因切换语言重置。",
@@ -25,7 +25,7 @@ const zh = {
   transfer:
     "接下来用一道新题检查独立运用。读完讲解、通过小检查，不等于已经掌握整个主题。",
   practice: "去做一道独立练习",
-  practiceScope: "将打开原有中文练习区；完整英语练习将在后续接入。",
+  practiceScope: "将打开当前教学语言的练习，使用一组新的参数。",
   progress: "学习进度",
   current: "当前",
   completed: "已检查",
@@ -57,7 +57,7 @@ const en: Record<keyof typeof zh, string> = {
   subtitle: "Explanation → checkpoint → revisit or continue → fresh problem",
   language: "教学语言 / Lesson language",
   scope:
-    "Chinese / English applies to this guided module. Source materials and other pages keep their original language.",
+    "The interface and pilot tasks support Chinese and English. Sources and personal work retain their original language.",
   start: "Start guided lesson",
   intro:
     "Work through three small goals. Switch explanations whenever useful. Progress is saved to your account and stays the same when you change language.",
@@ -79,7 +79,7 @@ const en: Record<keyof typeof zh, string> = {
     "Now try a fresh problem independently. Reading explanations and passing guided checks do not establish mastery of the whole topic.",
   practice: "Try an independent problem",
   practiceScope:
-    "Opens the existing practice area in Chinese. Full English practice is planned for a later release.",
+    "Opens practice in your selected language, with fresh parameters.",
   progress: "Lesson progress",
   current: "Current",
   completed: "Checked",

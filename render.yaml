@@ -1,0 +1,31 @@
+# Paid persistent-disk pilot. Creating it requires the owner's billing confirmation.
+services:
+  - type: web
+    name: stem-study-studio
+    runtime: docker
+    plan: 0.5c-512mb
+    region: frankfurt
+    dockerContext: ./apps/study-studio
+    dockerfilePath: ./apps/study-studio/Dockerfile
+    healthCheckPath: /api/health
+    maxShutdownDelaySeconds: 90
+    autoDeployTrigger: off
+    disk:
+      name: study-data
+      mountPath: /var/data
+      sizeGB: 2
+    envVars:
+      - key: STUDIO_DEPLOYMENT
+        value: hosted
+      - key: STUDIO_DATA_DIR
+        value: /var/data/study-studio
+      - key: STUDIO_BOOTSTRAP_TOKEN
+        generateValue: true
+      - key: STUDIO_MAX_USERS
+        value: '10'
+      - key: STUDIO_DAILY_MODEL_CALLS
+        value: '10'
+      - key: STUDIO_VISION_MODEL
+        value: gpt-4.1
+      - key: OPENAI_API_KEY
+        sync: false

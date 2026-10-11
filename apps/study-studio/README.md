@@ -116,3 +116,11 @@ This is a single-user loopback prototype, not a deployable student portal. Do no
 ## ELEC270 第一版（2026-10-10）
 
 默认入口现在是 ELEC270 试点，见 [PILOT.md](PILOT.md)。原始演示入口保留在 `/?prototype=1`。新功能包括真实课程导入、独立账号、三主题诊断/反馈、照片与确认、学习记录及 Skill V1 导出。模型未配置时可用数值检查和手动转录；自动识别与 AI 过程反馈须配置后实测。
+
+## Invited-pilot milestone (11 October 2026)
+
+The primary interface, authored tasks for all three pilot topics, deterministic feedback, hints and examples now support Chinese/English. Language is saved to the account. Source documents and learner writing remain in their original language; historical evidence is retained. AI feedback is requested in the chosen language; multilingual AI quality has only mock-contract coverage so far.
+
+The new study-plan page suggests continuing an unfinished problem, revisiting an error, trying fresh practice or a due review. Suggestions do not certify mastery or retention. Answer drafts autosave separately from attempts, resume after refresh, detect conflicting edits and are included in raw personal export. Guided checkpoint inputs and unsaved personal notes are still distinct from these practice-answer drafts.
+
+For the prepared shared-URL deployment path, exact user login/billing handoff, hosted limits and the backup/restore drill, see [DEPLOYMENT.md](DEPLOYMENT.md). `render.yaml` and the Dockerfile prepare a small single-process invitation pilot. No cloud service has been created or charged by this change. The initial cloud seed contains only distributable authored material, not the local private course.

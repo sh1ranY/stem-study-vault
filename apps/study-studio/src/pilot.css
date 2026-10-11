@@ -973,3 +973,116 @@
 .pilot-routes[hidden] {
   display: none;
 }
+
+/* Shared workspace controls and continuation cards. */
+.studio-language {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 12px;
+  color: var(--muted, #59655f);
+  flex-wrap: wrap;
+}
+.studio-language select {
+  padding: 7px 10px;
+  border: 1px solid #cdd8d0;
+  border-radius: 8px;
+  background: white;
+  color: #253f32;
+}
+.pilot-top {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.pilot-auth-card > .studio-language {
+  margin-bottom: 24px;
+  justify-content: flex-end;
+}
+.learning-overview {
+  padding: 36px;
+  max-width: 1300px;
+  margin: auto;
+}
+.learning-overview h2 {
+  font-size: 32px;
+  letter-spacing: -0.03em;
+}
+.learning-overview > div > p {
+  max-width: 720px;
+  color: #5d6b63;
+  line-height: 1.7;
+}
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin: 28px 0;
+}
+.overview-grid article {
+  background: white;
+  border: 1px solid #dfe6df;
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+.overview-grid h3 {
+  margin: 0;
+  font-size: 19px;
+}
+.overview-grid p {
+  margin: 0;
+  line-height: 1.65;
+  color: #59685e;
+  flex: 1;
+}
+.overview-grid small {
+  display: block;
+  color: #627269;
+  line-height: 1.6;
+}
+.overview-grid button {
+  margin-top: 10px;
+  white-space: normal;
+}
+.overview-number {
+  font-size: 13px;
+  color: #436c51;
+  letter-spacing: 0.12em;
+}
+.answer-draft {
+  margin: 12px 0;
+  padding: 10px 12px;
+  background: #f2f6f1;
+  border-radius: 8px;
+  line-height: 1.6;
+  color: #56655b;
+}
+.pilot-shell button:focus-visible,
+.pilot-shell input:focus-visible,
+.pilot-shell textarea:focus-visible,
+.pilot-shell select:focus-visible {
+  outline: 3px solid #527b5b;
+  outline-offset: 3px;
+}
+@media (max-width: 1050px) {
+  .overview-grid {
+    grid-template-columns: 1fr;
+  }
+  .learning-overview {
+    padding: 24px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spin {
+    animation: none !important;
+  }
+  * {
+    scroll-behavior: auto !important;
+  }
+}
+
+.pilot-top { height: auto; min-height: 72px; padding-top: 12px; padding-bottom: 12px; }
+.pilot-top > span:not(.pilot-badge) { display:flex; gap:8px; align-items:center; }

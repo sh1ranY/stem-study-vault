@@ -44,3 +44,11 @@ Browser: isolated synthetic GuidedDemo account at localhost:5177, separate datab
 ## Pilot live API connection check, 2026-10-10
 
 The pilot Responses adapter completed two real gpt-4.1 API requests: transcription of a synthetic printed answer image and process feedback following explicit confirmation. All six printed numerical fields matched the fixture. An isolated temporary database kept test records out of the real learner database. The feedback included redundant checks of already-correct work, so successful transport is not a teaching-quality evaluation. Real handwriting accuracy and learning effectiveness remain untested. The earlier “no real API request” statement refers to the original legacy prototype adapter.
+
+## Invited-pilot milestone, 2026-10-11
+
+78 isolated tests passed locally on Python 3.9 after introducing bilingual task presentation, revisioned drafts, continuation decisions, hosted configuration, invitation limits, photo quotas and backup/restore. English/Chinese presentation preserves all 216 task IDs and numerical answer keys. Tests include draft replay/conflict/ownership, answer-time language, no learner-data echo in validation errors, protected bootstrap, secure hosted cookies, exact origins, expired invitations, numerical evidence boundaries, and a backup restore with photo-path relocation and session invalidation.
+
+Frontend build passes with reading/legacy bundles separated; largest emitted JavaScript chunk is below 500 kB. Browser verification in a separate synthetic course/account has exercised English diagnosis, automatic draft save on navigation, reload/resume, confirmation and correct feedback. Mobile layout and further account-switch/photo checks are in progress. No real user answers or private course documents are used in these test records.
+
+GitHub Actions now defines Python 3.9/3.12 tests, frontend clean install/build, Docker build, protected bootstrap and persistence across container recreation. Remote CI and actual provider deployment results must be recorded separately once observed. Local Docker is unavailable on the development computer; no claim of a local container test is made. No live model calls or real handwriting evaluation were made for this iteration.

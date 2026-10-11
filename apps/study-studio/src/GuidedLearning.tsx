@@ -48,12 +48,13 @@ const root = "/pilot/learning";
 
 export default function GuidedLearning({
   disabled,
+  language,
   onPractice,
 }: {
   disabled: boolean;
+  language: TeachingLanguage;
   onPractice: () => Promise<unknown>;
 }) {
-  const [language, setLanguage] = useState<TeachingLanguage>("zh-CN");
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -65,7 +66,6 @@ export default function GuidedLearning({
   const locked = disabled || busy;
   function envelope(e: Envelope) {
     setLesson(e.lesson);
-    setLanguage(e.language);
     setLoaded(true);
   }
   async function action(fn: () => Promise<unknown>) {
@@ -94,7 +94,7 @@ export default function GuidedLearning({
     return () => {
       active = false;
     };
-  }, []);
+  }, [language]);
   useEffect(() => {
     setNumber("");
     setChoice("");
@@ -116,25 +116,6 @@ export default function GuidedLearning({
         <h3>{tx.title}</h3>
         <p>{tx.subtitle}</p>
       </div>
-      <label className="guided-language">
-        {tx.language}
-        <select
-          value={language}
-          disabled={locked || !loaded}
-          onChange={(e) =>
-            void action(async () => {
-              const data = await api<Envelope>(root + "/preferences", {
-                method: "PUT",
-                body: JSON.stringify({ language: e.target.value }),
-              });
-              envelope(data);
-            })
-          }
-        >
-          <option value="zh-CN">简体中文</option>
-          <option value="en">English</option>
-        </select>
-      </label>
       <p className="pilot-muted">{tx.scope}</p>
       {error && (
         <div className="pilot-error" role="alert">

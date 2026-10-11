@@ -1,3 +1,5 @@
+from . import localization
+from ..deployment import settings as deployment_settings
 """Local invitation pilot API. All learner lookups are scoped by authenticated owner."""
 import hashlib
 import hmac
@@ -25,6 +27,7 @@ MODEL_LOCK=threading.Lock()
 COOKIE='elec270_session'
 class Body(BaseModel): model_config=ConfigDict(extra='forbid')
 class Login(Body):
+    bootstrap_token:str=Field(default="",max_length=256)
     name:str=Field(min_length=1,max_length=60)
     password:str=Field(min_length=10,max_length=200)
     invite:str=''
@@ -94,7 +97,7 @@ def event(owner,kind,conn=None,**values):
 def auth_response(u,response):
     token=secrets.token_urlsafe(32)
     store.save('login','auth',{'id':hashlib.sha256(token.encode()).hexdigest(),'user_id':u['id'],'expires':time.time()+30*86400})
-    response.set_cookie(COOKIE,token,httponly=True,samesite='strict',secure=os.getenv('STUDIO_COOKIE_SECURE')=='1',max_age=30*86400,path='/api')
+    response.set_cookie(COOKIE,token,httponly=True,samesite='strict',secure=deployment_settings().hosted or os.getenv('STUDIO_COOKIE_SECURE')=='1',max_age=30*86400,path='/api')
     return {'id':u['id'],'name':u['name'],'role':u['role']}
 
 def passwd(value,salt): return hashlib.pbkdf2_hmac('sha256',value.encode(),bytes.fromhex(salt),600000).hex()
@@ -104,7 +107,7 @@ def status(request:Request):
     c=store.fetch('config','shared','current-course');u=None
     try: u=user(request)
     except HTTPException: pass
-    return {'setup_required':not bool(store.listing('user','auth')),'course_ready':bool(c),'model_available':model.available(),'user':{'id':u['id'],'name':u['name'],'role':u['role']} if u else None,'deployment':'local-invitation','database':'postgresql' if store.URL.startswith('postgres') else 'sqlite-local','notice':'本机试点 · 三主题数值检查可离线使用；AI 转写与过程反馈需要配置模型。'}
+    return {'language':teaching_language(u['id']) if u else 'zh-CN','setup_required':not bool(store.listing('user','auth')),'course_ready':bool(c),'model_available':model.available(),'daily_model_calls':int(os.getenv('STUDIO_DAILY_MODEL_CALLS','30')),'user':{'id':u['id'],'name':u['name'],'role':u['role']} if u else None,'deployment':'hosted-invitation' if deployment_settings().hosted else 'local-invitation','database':'postgresql' if store.URL.startswith('postgres') else 'sqlite-local','notice':'本机试点 · 三主题数值检查可离线使用；AI 转写与过程反馈需要配置模型。'}
 
 @router.post('/auth/register')
 def register(body:Login,response:Response):
@@ -113,9 +116,13 @@ def register(body:Login,response:Response):
     with LOCK, store.engine.begin() as conn:
         users=store.listing('user','auth',conn)
         if any(x['name'].casefold()==name.casefold() for x in users): fail(409,'这个用户名已存在。')
+        if deployment_settings().hosted:
+            if len(users)>=int(os.getenv('STUDIO_MAX_USERS','10')): fail(403,'试用名额已满。 / This pilot has reached its account limit.')
+            if not users and not hmac.compare_digest(body.bootstrap_token.encode(),os.getenv('STUDIO_BOOTSTRAP_TOKEN','').encode()):
+                fail(403,'需要课程所有者的初始化密钥。 / The owner setup token is required.')
         if users:
             invite=store.fetch('invite','auth',hashlib.sha256(body.invite.encode()).hexdigest(),conn)
-            if not invite or invite['used']: fail(403,'需要有效的一次性邀请码。')
+            if not invite or invite['used'] or (invite.get('expires_at') and invite['expires_at']<store.now()): fail(403,'需要有效的一次性邀请码。')
             invite['used']=True;store.save('invite','auth',invite,conn)
         salt=secrets.token_hex(16)
         u={'id':store.uid(),'name':name,'salt':salt,'password_hash':passwd(body.password,salt),'password_algorithm':'pbkdf2-sha256-600000','role':'learner' if users else 'owner','created_at':store.now()}
@@ -125,8 +132,13 @@ def register(body:Login,response:Response):
 @router.post('/auth/login')
 def login(body:Login,response:Response):
     # Persist failed counts without recording supplied passwords.
-    key=hashlib.sha256(body.name.casefold().encode()).hexdigest()
+    key=hashlib.sha256(body.name.strip().casefold().encode()).hexdigest()
     with LOCK:
+        if deployment_settings().hosted:
+            gate=store.fetch('throttle','auth','global-login') or {'id':'global-login','count':0,'until':0}
+            if gate['until']<time.time(): gate.update(count=0,until=time.time()+60)
+            if gate['count']>=60: fail(429,'登录请求较多，请一分钟后再试。 / Too many sign-in requests. Try again in one minute.')
+            gate['count']+=1;store.save('throttle','auth',gate)
         limit=store.fetch('throttle','auth',key) or {'id':key,'count':0,'until':0}
         if limit['until']>time.time() and limit['count']>=8: fail(429,'尝试次数过多，请十五分钟后再试。')
         u=next((u for u in store.listing('user','auth') if u['name'].casefold()==body.name.strip().casefold()),None)
@@ -145,10 +157,11 @@ def logout(request:Request,response:Response,u=Depends(user)):
 @router.post('/auth/invite')
 def invite(u=Depends(user)):
     if u['role']!='owner': fail(403,'仅本机课程所有者可创建邀请。')
-    token=secrets.token_urlsafe(18);store.save('invite','auth',{'id':hashlib.sha256(token.encode()).hexdigest(),'used':False,'created_at':store.now()});return {'invite':token}
+    token=secrets.token_urlsafe(18);store.save('invite','auth',{'id':hashlib.sha256(token.encode()).hexdigest(),'used':False,'created_at':store.now(),'expires_at':(datetime.now(timezone.utc)+timedelta(days=7)).isoformat()});return {'invite':token}
 
 @router.post('/legacy/import')
 def import_old(u=Depends(user)):
+    if deployment_settings().hosted: fail(404,'云端不提供本机旧记录导入。 / Legacy import is local only.')
     if u['role']!='owner': fail(403,'仅所有者可以读取本机旧原型记录。')
     from .migrate_legacy import import_legacy
     return {'count':import_legacy(u['id'])}
@@ -161,7 +174,7 @@ def old_records(u=Depends(user)):
 def course(u=Depends(user)):
     c=current()
     return {'id':c['id'],'title':c['title'],'imported_at':c['imported_at'],'lessons':[{'id':l['id'],'title':l['title'],'week':l['week']} for l in c['lessons']],
-            'topics':{k:{'title':v['title'],'week':v['week'],'objective':v['objective'],'routes':list(v['routes'])} for k,v in teaching.TOPICS.items()},
+            'topics':{k:{'title':v['title'],'week':v['week'],'objective':v['objective'],'routes':list(v['routes'])} for k,v in ((k,localization.topic(k,teaching_language(u['id']))) for k in teaching.TOPICS)},
             'asset_count':len(c['assets']),'warnings':c['warnings'],'legacy_records':c['legacy_records'] if u['role']=='owner' else []}
 
 @router.get('/lessons/{id}')
@@ -203,7 +216,7 @@ def state(u=Depends(user)):
         seen=[a for a in active if a['topic']==topic]
         summaries[topic]={'attempts':len(seen),'independent':sum(a['result']['status']=='independent' for a in seen),'status':seen[-1]['result']['status'] if seen else 'unknown',
           'due_at':seen[-1].get('review_due') if seen else None,'route':(store.fetch('route',owner,topic) or {}).get('route',seen[-1]['result']['route'] if seen else 'visual')}
-    return {'attempts':attempts,'tasks':[teaching.public_task(t) for t in sorted(store.listing('task',owner),key=lambda t:t['created_at'])],
+    return {'drafts':store.listing('answer-draft',owner),'attempts':[localization.attempt(a,required('task',owner,a['task_id']),teaching_language(owner)) for a in attempts],'tasks':[localization.public_task(t,teaching_language(owner)) for t in sorted(store.listing('task',owner),key=lambda t:t['created_at'])],
             'events':events,'summaries':summaries,'progress':store.listing('progress',owner),'photos':[{k:v for k,v in p.items() if k not in ('path','original_path')} for p in store.listing('photo',owner)],
             'runs':[{**r,'status':'interrupted_or_unknown' if r['status']=='running' and (datetime.now(timezone.utc)-datetime.fromisoformat(r['at'])).total_seconds()>120 else r['status']} for r in store.listing('run',owner)],'feedback':store.listing('feedback',owner)}
 
@@ -214,7 +227,7 @@ def make_task(body:TaskRequest,u=Depends(user)):
         signature={'topic':body.topic,'phase':body.phase}
         if previous:
             if previous['signature']!=signature: fail(409,'这个请求编号已用于其他操作。')
-            return teaching.public_task(required('task',u['id'],previous['task_id'],conn))
+            return localization.public_task(required('task',u['id'],previous['task_id'],conn),teaching_language(u['id'],conn))
         tasks=store.listing('task',u['id'],conn)
         n=sum(t['topic']==body.topic and t['phase']==body.phase for t in tasks)
         try: t=teaching.task(body.topic,body.phase,n)
@@ -222,7 +235,7 @@ def make_task(body:TaskRequest,u=Depends(user)):
         t['course_version']=current()['id'];store.save('task',u['id'],t,conn)
         store.save('request',u['id'],{'id':body.request_id,'signature':signature,'task_id':t['id']},conn)
         event(u['id'],'task_opened',conn,task_id=t['id'],topic=t['topic'])
-        return teaching.public_task(t)
+        return localization.public_task(t,teaching_language(u['id']))
 
 @router.post('/route')
 def choose_route(body:Route,u=Depends(user)):
@@ -230,12 +243,12 @@ def choose_route(body:Route,u=Depends(user)):
     with LOCK,store.engine.begin() as conn:
         store.save('route',u['id'],{'id':body.topic,'route':body.route,'at':store.now()},conn)
         event(u['id'],'route_chosen',conn,topic=body.topic,route=body.route)
-    return {'body':teaching.TOPICS[body.topic]['routes'][body.route],'example':teaching.TOPICS[body.topic]['example']}
+    return {'body':localization.topic(body.topic,teaching_language(u['id']))['routes'][body.route],'example':localization.topic(body.topic,teaching_language(u['id']))['example']}
 
 @router.get('/teaching/{topic}')
 def help_topic(topic:str,route:str='visual',u=Depends(user)):
     if topic not in teaching.TOPICS or route not in teaching.TOPICS[topic]['routes']: fail(404,'未知教学路径。')
-    return {'body':teaching.TOPICS[topic]['routes'][route],'example':teaching.TOPICS[topic]['example']}
+    return {'body':localization.topic(topic,teaching_language(u['id']))['routes'][route],'example':localization.topic(topic,teaching_language(u['id']))['example']}
 
 @router.patch('/progress')
 def progress(body:Progress,u=Depends(user)):
@@ -246,7 +259,7 @@ def progress(body:Progress,u=Depends(user)):
 def reveal(body:Reveal,u=Depends(user)):
     if body.task_id:
         if body.kind not in ('hint','solution'): fail(422,'未知提示类型。')
-        t=required('task',u['id'],body.task_id);event(u['id'],body.kind,task_id=t['id']);return {'body':t[body.kind]}
+        t=required('task',u['id'],body.task_id);event(u['id'],body.kind,task_id=t['id']);return {'body':localization.task(t,teaching_language(u['id']))[body.kind]}
     c=current();l=next((l for l in c['lessons'] if l['id']==body.lesson_id),None)
     b=next((b for b in l['blocks'] if b['id']==body.block_id),None) if l else None
     if not b: fail(404,'未找到内容。')
@@ -265,11 +278,18 @@ async def photo(task_id:str,file:UploadFile=File(...),u=Depends(user)):
             corrected=ImageOps.exif_transpose(im).convert('RGB');corrected.thumbnail((2000,2000))
             buf=io.BytesIO();corrected.save(buf,format='JPEG',quality=90)
     except (UnidentifiedImageError,OSError,Image.DecompressionBombError): fail(422,'这张照片无法读取，请重新拍照或输入文字。')
-    key=store.uid();folder=store.DATA/'photos'/u['id'];folder.mkdir(parents=True,exist_ok=True)
-    path=folder/(key+'.jpg');path.write_bytes(buf.getvalue())
-    original=folder/(key+'.original');original.write_bytes(data)
-    p={'id':key,'task_id':task_id,'path':str(path),'original_path':str(original),'original_format':original_format,'sha256':hashlib.sha256(data).hexdigest(),'at':store.now(),'transcription':None}
-    store.save('photo',u['id'],p)
+    with LOCK:
+        used=sum(sum(Path(p[k]).stat().st_size for k in ('path','original_path') if p.get(k) and Path(p[k]).exists()) for p in store.listing('photo',u['id']))
+        if used+len(data)+len(buf.getvalue())>int(os.getenv('STUDIO_PHOTO_QUOTA_BYTES','104857600')):
+            fail(413,'照片空间已满，请导出并清理个人数据，或联系课程所有者。 / Photo storage is full. Export and clear your data, or contact the course owner.')
+        key=store.uid();folder=store.DATA/'photos'/u['id'];folder.mkdir(parents=True,exist_ok=True)
+        path=folder/(key+'.jpg');original=folder/(key+'.original')
+        try:
+            path.write_bytes(buf.getvalue());original.write_bytes(data)
+            p={'id':key,'task_id':task_id,'path':str(path),'original_path':str(original),'original_format':original_format,'sha256':hashlib.sha256(data).hexdigest(),'at':store.now(),'transcription':None}
+            store.save('photo',u['id'],p)
+        except Exception:
+            path.unlink(missing_ok=True);original.unlink(missing_ok=True);raise
     return {k:v for k,v in p.items() if k not in ('path','original_path')}
 
 @router.get('/photos/{id}')
@@ -308,7 +328,7 @@ def run_model(owner,request_id,operation,reference,execute):
 @router.post('/photos/{id}/transcribe')
 def transcribe(id:str,body:Operation,u=Depends(user)):
     p=required('photo',u['id'],id);t=required('task',u['id'],p['task_id'])
-    result=run_model(u['id'],body.request_id,'transcribe',id,lambda:model.call('transcribe',{'task':teaching.public_task(t)},Path(p['path']).read_bytes()))
+    result=run_model(u['id'],body.request_id,'transcribe',id,lambda:model.call('transcribe',{'task':localization.public_task(t,teaching_language(u['id'])),'language':teaching_language(u['id'])},Path(p['path']).read_bytes()))
     with LOCK:
         p=required('photo',u['id'],id);p['transcription']=result;p.setdefault('revisions',[])
         if not any(r['run_id']==body.request_id for r in p['revisions']): p['revisions'].append({'run_id':body.request_id,'at':store.now(),'value':result})
@@ -323,7 +343,7 @@ def submit(body:Submit,u=Depends(user)):
         old=store.fetch('attempt',u['id'],body.request_id,conn)
         if old:
             if old['signature']!=signature: fail(409,'同一提交编号的内容不同，请刷新后重试。')
-            return old
+            return localization.attempt(old,required('task',u['id'],old['task_id'],conn),teaching_language(u['id'],conn))
         t=required('task',u['id'],body.task_id,conn)
         p=required('photo',u['id'],body.photo_id,conn) if body.photo_id else None
         if p and p['task_id']!=t['id']: fail(422,'照片属于另一道题。')
@@ -332,12 +352,12 @@ def submit(body:Submit,u=Depends(user)):
         try: result=teaching.evaluate(t,body.answers,exposed,prior)
         except ValueError as e: fail(422,str(e))
         record={'id':body.request_id,'signature':signature,'task_id':t['id'],'topic':t['topic'],'course_version':t['course_version'],'task_version':t['version'],'at':store.now(),
-          'answers':body.answers,'working':body.working,'photo_id':body.photo_id,'recognition':p.get('transcription') if p else None,'confirmed':True,'exposure_before':exposed,'prior_attempt':prior,'active':True,'result':result,
+          'language':teaching_language(u['id'],conn),'translation_version':localization.VERSION,'answers':body.answers,'working':body.working,'photo_id':body.photo_id,'recognition':p.get('transcription') if p else None,'confirmed':True,'exposure_before':exposed,'prior_attempt':prior,'active':True,'result':result,
           'review_due':(datetime.now(timezone.utc)+timedelta(days=2)).isoformat(),'origin':'synthetic' if u.get('synthetic') else 'learner-submitted'}
         store.save('attempt',u['id'],record,conn)
         event(u['id'],'attempt',conn,task_id=t['id'],attempt_id=record['id'])
         event(u['id'],'teaching_decision',conn,attempt_id=record['id'],topic=t['topic'],route=result['route'],reason=result['feedback'])
-        return record
+        return localization.attempt(record,t,teaching_language(u['id'],conn))
 
 @router.post('/attempts/{id}/feedback')
 def feedback(id:str,body:Operation,u=Depends(user)):
@@ -346,15 +366,15 @@ def feedback(id:str,body:Operation,u=Depends(user)):
     t=required('task',u['id'],a['task_id']);c=required('course','shared',a['course_version'])
     l=next(l for l in c['lessons'] if l['week']==teaching.TOPICS[t['topic']]['week'])
     # Authored topic core is the bounded teaching context. Raw answers/solutions never enter tutor context.
-    data={'task':teaching.public_task(t),'working':a['working'],'answers':a['answers'],'checks':a['result']['checks'],
-          'teaching_core':teaching.TOPICS[t['topic']]['routes'],'source_ids':[l['id']],'source_context':{'id':l['id'],'title':l['title'],'excerpt':'\n'.join(b['body'] for b in l['blocks'] if b['role']=='lesson')[:10000]}}
+    data={'language':teaching_language(u['id']),'task':localization.public_task(t,teaching_language(u['id'])),'working':a['working'],'answers':a['answers'],'checks':a['result']['checks'],
+          'teaching_core':localization.topic(t['topic'],teaching_language(u['id']))['routes'],'source_ids':[l['id']],'source_context':{'id':l['id'],'title':l['title'],'excerpt':'\n'.join(b['body'] for b in l['blocks'] if b['role']=='lesson')[:10000]}}
     result=run_model(u['id'],body.request_id,'feedback',id,lambda:model.call('feedback',data))
     with LOCK,store.engine.begin() as conn:
         latest=required('attempt',u['id'],id,conn)
         if not latest['active']: fail(409,'作答已在生成期间撤回，反馈未应用。')
         existing=store.fetch('feedback',u['id'],body.request_id,conn)
         if not existing:
-            store.save('feedback',u['id'],{'id':body.request_id,'attempt_id':id,'at':store.now(),'value':result,'label':'AI 建议，尚未独立核实'},conn)
+            store.save('feedback',u['id'],{'id':body.request_id,'attempt_id':id,'at':store.now(),'value':result,'language':data['language'],'label':'AI 建议，尚未独立核实'},conn)
             event(u['id'],'feedback',conn,task_id=t['id'],attempt_id=id)
     return result
 
@@ -368,7 +388,7 @@ def withdraw(id:str,body:Withdraw,u=Depends(user)):
 
 @router.get('/export')
 def export(u=Depends(user)):
-    groups={kind:store.listing(kind,u['id']) for kind in ('attempt','event','progress','task','photo','feedback','route','run','legacy-session','teaching-preference','guided-session','guided-check')}
+    groups={kind:store.listing(kind,u['id']) for kind in ('attempt','event','progress','task','photo','feedback','route','run','legacy-session','teaching-preference','guided-session','guided-check','answer-draft')}
     # This export excludes solutions, so exporting personal evidence is not solution exposure.
     groups['task']=[teaching.public_task(t) for t in groups['task']]
     photos=groups['photo'];groups['photo']=[{k:v for k,v in p.items() if k not in ('path','original_path')} for p in photos]
@@ -491,3 +511,6 @@ def next_guided(body:GuidedNext,u=Depends(user)):
 @router.get('/learning/history')
 def guided_history(u=Depends(user)):
     return sorted(store.listing('guided-check',u['id']),key=lambda r:r['at'])
+
+from .workspace_routes import create_router
+router.include_router(create_router(user, required, fail, LOCK))
