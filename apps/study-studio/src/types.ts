@@ -1,0 +1,9 @@
+export type Section = {id:string;title:string;eyebrow:string;minutes:number|null;body:string;figure?:string;source_refs:string[]};
+export type Source = {id:string;name:string;locator:string;text:string};
+export type Imported = {id:string;name:string;pages:{page:number;text:string}[];warnings:string[];sha256:string};
+export type Task = {id:string;kind:string;title:string;prompt:string;template?:string;fields:{id:string;label:string}[];choices:string[];objective:string};
+export type Result = {correct:boolean;checks:Record<string,boolean>;reasoning_correct:boolean;status:string;strategy:string;support:{title:string;hypothesis:string;body:string;section:string};scope:string;retention:string};
+export type Attempt = {id:string;task_id:string;at:string;answers:Record<string,string>;choice:number;working:string;confidence:string;exposure_before:boolean;result:Result;active:boolean;withdrawal_reason?:string};
+export type Session = {id:string;mode:string;unit:{title:string;course:string;summary:string;scope:string;prerequisites:string;objectives:string[];sections:Section[]};sources:Source[];attached_sources:Imported[];tasks:Task[];attempts:Attempt[];events:{id:string;kind:string;at:string;task_id?:string;via?:string}[];read_sections:string[];current_section:string;notes:string;updated_at:string;transfer_count:number;tutor_messages:{id:string;question:string;body:string;source_refs:string[];at:string}[]};
+export type Config = {model_available:boolean;provider:string|null;storage:string;notice:string};
+export type Summary = {id:string;title:string;course:string;updated_at:string;read_count:number;section_count:number;attempt_count:number;mode:string};

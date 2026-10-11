@@ -1,0 +1,11 @@
+fastapi>=0.115,<1
+uvicorn>=0.34,<1
+python-multipart>=0.0.20,<1
+httpx>=0.28,<1
+pypdf>=6,<7
+python-pptx>=1,<2
+python-dotenv>=1,<2
+SQLAlchemy>=2,<3
+psycopg[binary]>=3,<4
+alembic>=1.14,<2
+Pillow>=11,<13

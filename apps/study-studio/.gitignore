@@ -1,0 +1,13 @@
+data/
+.env
+.env.*
+!.env.example
+.venv/
+node_modules/
+dist/
+__pycache__/
+
+*.tsbuildinfo
+*.sqlite3
+*.sqlite3-*
+*.db

@@ -6,6 +6,12 @@
 
 [English](README.en.md) · [查看完整学习示例](examples/demo-vault/Lessons/01%20RC%20charging.md) · [检查范围](VALIDATION.md)
 
+## 本地学习应用（试点）
+
+仓库现在包含 [Learning Studio](apps/study-studio/README.md)：React 前端、FastAPI 后端、SQLite 数据库结构与迁移，以及 ELEC270 的诊断、教学、拍照作答、反馈和个人记录流程。斜坡构造提供中英双语分步教学与交互图形；其他界面与课程尚未完整英语化。
+
+请按应用说明本地运行。仓库提供代码与原创示例，不包含私人知识库、学校课件、学习数据库、照片或模型密钥。应用的图片识别与 AI 反馈需另配模型 API key；下方 Skill 的安装和使用方式保持不变。
+
 ## 阅读体验与练习递进
 
 讲义要求把必要的符号、条件、数据和图示放在阅读位置，用连贯解释和中间状态帮助读者跟上推理。必要时嵌入清晰的课件截图，注明来源并说明应该看哪里。练习围绕同一能力，从有支持的尝试逐步走向独立推理、条件变化和综合应用；递进依据是思考要求，而不是统一题量或更大的数字。见 [原创讲解与练习衔接示例](skills/stem-study-vault/references/reading-and-practice-example.md)。
