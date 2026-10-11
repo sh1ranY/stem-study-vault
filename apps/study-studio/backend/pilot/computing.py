@@ -73,7 +73,7 @@ def task(key, phase, number, language='zh-CN'):
     if key not in PACKS or phase not in ('diagnosis', 'practice', 'review') or not 0 <= number < 24:
         raise ValueError('这组已核查参数已用完，请复习记录或选择其他主题。')
     tr = lambda zh, en: pick(zh, en, language)
-    k = number + 1 + (24 if phase == 'review' else 0) + (3 if phase == 'practice' else 0)
+    k = number + 1 + {'diagnosis': 0, 'practice': 24, 'review': 48}[phase]
     code = PACKS[key][0]; topic = topics(code, language)[key]
     fields = []
     def field(id, zh, en, answer, route, choices=None):

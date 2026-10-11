@@ -154,10 +154,15 @@ class CourseTests(unittest.TestCase):
 
 
 class ComputingOracleTests(unittest.TestCase):
+    def test_no_identical_questions_across_diagnosis_practice_review(self):
+        for topic in computing.PACKS:
+            prompts=[computing.task(topic,phase,n)['prompt'] for phase in ('diagnosis','practice','review') for n in range(24)]
+            self.assertEqual(len(set(prompts)),72,topic)
+
     def test_sql_results_match_sqlite_for_every_parameter(self):
         for phase in ('diagnosis','practice','review'):
             for number in range(24):
-                k=number+1+(24 if phase=='review' else 0)+(3 if phase=='practice' else 0)
+                k=number+1+{'diagnosis':0,'practice':24,'review':48}[phase]
                 with sqlite3.connect(':memory:') as db:
                     db.executescript('CREATE TABLE Customers(id TEXT PRIMARY KEY); CREATE TABLE Orders(order_id INTEGER PRIMARY KEY, customer_id TEXT); CREATE TABLE Sales(team TEXT, amount INTEGER);')
                     db.executemany('INSERT INTO Customers VALUES (?)',[(x,) for x in 'ABC'])
@@ -184,7 +189,7 @@ class ComputingOracleTests(unittest.TestCase):
                     self.assertNotEqual(t['prompt'],en['prompt']);self.assertEqual(t['id'],en['id'])
                     self.assertNotIn('answer',localization.public_task(t,'en')['fields'][0])
                     self.assertTrue(teaching.evaluate(t,{k:str(v) for k,v in answers.items()},False,False)['passed'])
-                    k=n+1+(24 if phase=='review' else 0)+(3 if phase=='practice' else 0)
+                    k=n+1+{'diagnosis':0,'practice':24,'review':48}[phase]
                     if topic=='petri':
                         tokens=k+2;firings=0
                         while tokens>=2: tokens-=2;firings+=1
