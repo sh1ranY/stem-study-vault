@@ -8,7 +8,6 @@ services:
     dockerContext: ./apps/study-studio
     dockerfilePath: ./apps/study-studio/Dockerfile
     healthCheckPath: /api/health
-    maxShutdownDelaySeconds: 90
     autoDeployTrigger: off
     disk:
       name: study-data

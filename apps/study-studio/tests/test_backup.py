@@ -1,3 +1,4 @@
+import hashlib
 import json
 import sqlite3
 import tempfile
@@ -26,9 +27,20 @@ class BackupTests(unittest.TestCase):
     def test_checksum_and_traversal_rejected_without_partial_destination(self):
         with tempfile.TemporaryDirectory() as root:
             root=Path(root)
-            for name,files in [('checksum',{'pilot.sqlite3':'invalid'}),('traversal',{'pilot.sqlite3':'invalid','../escape':'invalid'})]:
-                archive=root/(name+'.zip');out=root/name
-                with zipfile.ZipFile(archive,'w') as z:
-                    z.writestr('manifest.json',json.dumps({'version':1,'data_root':'/old','files':files}));z.writestr('pilot.sqlite3',b'corrupt')
-                with self.assertRaises(ValueError):restore(archive,out)
-                self.assertFalse(out.exists())
+            content=b'synthetic-database-bytes'
+            valid_digest=hashlib.sha256(content).hexdigest()
+            cases=[('checksum',{'pilot.sqlite3':'invalid'},'Backup checksum mismatch')]
+            for index,path in enumerate(('../escape','/absolute-escape','photos/../../escape','photos\\escape')):
+                # The first member passes checksum validation, so this must reach
+                # the path check rather than fail earlier for an unrelated reason.
+                cases.append(('traversal-'+str(index),{'pilot.sqlite3':valid_digest,path:valid_digest},'Unsafe archive path'))
+            for name,files,message in cases:
+                with self.subTest(name=name):
+                    archive=root/(name+'.zip');out=root/name
+                    with zipfile.ZipFile(archive,'w') as z:
+                        z.writestr('manifest.json',json.dumps({'version':1,'data_root':'/old','files':files}))
+                        for member in files:
+                            z.writestr(member,content)
+                    with self.assertRaisesRegex(ValueError,message):restore(archive,out)
+                    self.assertFalse(out.exists())
+                    self.assertFalse((root/'escape').exists())
