@@ -6,6 +6,12 @@ A Codex skill for STEM and quantitative-course students. Its default output is a
 
 [中文说明](README.md) · [Original example vault](examples/demo-vault/Start.md) · [Validation and limits](VALIDATION.md)
 
+## Local learning application (pilot)
+
+[Learning Studio](apps/study-studio/README.md) adds a React frontend, FastAPI backend, SQLite schema/migrations, and an ELEC270 diagnosis–teaching–photo-answer–feedback loop. Ramp construction includes Chinese/English guided teaching and interactive graphs. This is a local pilot; the rest of the interface and course are not fully localised.
+
+The repository contains source code and original examples, not private course materials, learner databases, photos or API keys. Optional image transcription and AI feedback require a separately configured API key. The Skill workflow below remains available.
+
 ## Reading continuity and progressive practice
 
 Lessons keep required notation, conditions, data and figures at the reading location, explaining reasoning and intermediate states in connected prose. Useful source screenshots are legible, cited and interpreted beside the text. Practice develops a capability through supported attempts, independent reasoning, changed conditions and synthesis as appropriate; no fixed stage count or word quota is required. See the [original reading/practice example](skills/stem-study-vault/references/reading-and-practice-example.md).

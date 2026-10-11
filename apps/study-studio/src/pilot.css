@@ -1,0 +1,975 @@
+.pilot-shell {
+  min-height: 100vh;
+  background: #f7f8f3;
+  color: #223d33;
+  display: flex;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "PingFang SC",
+    sans-serif;
+}
+.pilot-shell button,
+.pilot-auth button {
+  border: 1px solid #d8e0d4;
+  border-radius: 8px;
+  padding: 9px 13px;
+  background: #fffefa;
+  line-height: 1.5;
+}
+.pilot-shell button:hover:not(:disabled) {
+  background: #eaf0e5;
+}
+.pilot-shell input,
+.pilot-shell textarea,
+.pilot-auth input {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #cfd9cf;
+  border-radius: 7px;
+  background: #fffefa;
+  color: #253b31;
+}
+.pilot-shell textarea {
+  resize: vertical;
+  min-height: 110px;
+}
+.pilot-sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 240px;
+  flex-shrink: 0;
+  padding: 30px 19px 20px;
+  background: #eff2e8;
+  border-right: 1px solid #dce4d8;
+  display: flex;
+  flex-direction: column;
+}
+.pilot-wordmark {
+  font-size: 12px;
+  letter-spacing: 2.3px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #225b45;
+}
+.pilot-wordmark svg {
+  background: #215a44;
+  color: #fcfff4;
+  padding: 5px;
+  border-radius: 9px;
+  width: 34px;
+  height: 34px;
+}
+.pilot-course-name {
+  font:
+    30px Georgia,
+    serif;
+  margin: 30px 8px 24px;
+}
+.pilot-course-name small {
+  display: block;
+  font: 12px system-ui;
+  color: #6a7869;
+  margin-top: 8px;
+}
+.pilot-sidebar nav button {
+  display: flex;
+  gap: 11px;
+  align-items: center;
+  text-align: left;
+  width: 100%;
+  border: 0;
+  background: none;
+  font-size: 13px;
+  margin-bottom: 4px;
+  padding: 12px;
+}
+.pilot-sidebar nav button.active {
+  background: #dfe9d8;
+  color: #194e38;
+  font-weight: 650;
+}
+.pilot-nav-label {
+  font-size: 11px;
+  letter-spacing: 0.6px;
+  color: #75806d;
+  margin: 29px 10px 13px;
+}
+.pilot-lessons {
+  overflow: auto;
+  flex: 1;
+}
+.pilot-lessons button {
+  border: 0;
+  background: none;
+  display: flex;
+  gap: 9px;
+  font-size: 12px;
+  padding: 10px 7px;
+  text-align: left;
+  width: 100%;
+  color: #687361;
+}
+.pilot-lessons button span {
+  color: #8d987f;
+  font-size: 10px;
+  padding-top: 2px;
+}
+.pilot-lessons button.active {
+  background: #e1e9db;
+  color: #235541;
+}
+.pilot-user {
+  padding: 16px 7px 0;
+  border-top: 1px solid #d9e2d3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+}
+.pilot-user button {
+  border: 0;
+  background: none;
+}
+.pilot-main {
+  flex: 1;
+  min-width: 0;
+}
+.pilot-top {
+  height: 72px;
+  background: #fdfdf8;
+  border-bottom: 1px solid #e1e6dc;
+  padding: 0 34px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  font-size: 12px;
+  color: #74806d;
+}
+.pilot-top > span:first-child {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.pilot-badge {
+  font-size: 11px;
+  background: #eaf0e3;
+  padding: 6px 10px;
+  border-radius: 20px;
+  color: #47704d;
+}
+.pilot-heading {
+  padding: 35px 38px 27px;
+  border-bottom: 1px solid #e0e6dc;
+}
+.pilot-eyebrow,
+.pilot-section-label {
+  font-size: 10px;
+  letter-spacing: 1.8px;
+  color: #668060;
+  font-weight: 650;
+}
+.pilot-heading h1 {
+  font-family: inherit;
+  font-size: 29px;
+  font-weight: 550;
+  letter-spacing: -0.6px;
+  margin: 12px 0;
+}
+.pilot-heading p {
+  font-size: 13px;
+  color: #7c8475;
+  margin: 0;
+}
+.pilot-topic-tabs {
+  display: flex;
+  gap: 10px;
+  margin-top: 26px;
+}
+.pilot-topic-tabs button {
+  text-align: left;
+  flex: 1;
+  font-size: 13px;
+  max-width: 270px;
+}
+.pilot-topic-tabs small {
+  display: block;
+  font-size: 10px;
+  color: #839075;
+  margin-top: 5px;
+}
+.pilot-topic-tabs button.active {
+  border-color: #7d9e76;
+  background: #eaf0e3;
+}
+.pilot-learning {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(350px, 1fr);
+  align-items: start;
+}
+.pilot-reading {
+  padding: 33px 38px;
+  min-width: 0;
+}
+.pilot-reading > h2,
+.pilot-practice > h2 {
+  font-size: 23px;
+  font-weight: 550;
+  margin: 13px 0;
+}
+.pilot-reading > p {
+  font-size: 14px;
+  color: #6d7967;
+}
+.pilot-routes {
+  display: flex;
+  gap: 6px;
+  margin: 22px 0 15px;
+  flex-wrap: wrap;
+}
+.pilot-routes button {
+  font-size: 12px;
+  border-radius: 25px;
+  padding: 7px 13px;
+}
+.pilot-routes button.active {
+  background: #23593f;
+  color: #fff;
+  border-color: #23593f;
+}
+.pilot-teaching {
+  padding: 23px 23px 14px;
+  border: 1px solid #d7e3d1;
+  border-radius: 10px;
+  background: #f0f5e9;
+  margin-bottom: 24px;
+}
+.pilot-teaching summary {
+  font-size: 12px;
+  color: #55724c;
+}
+.pilot-md {
+  color: #344338;
+  font-size: 14px;
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+.pilot-md p {
+  margin: 0 0 15px;
+}
+.pilot-md h1 {
+  font-family: inherit;
+  font-size: 26px;
+  margin: 25px 0 18px;
+}
+.pilot-md h2 {
+  font-size: 21px;
+  margin: 30px 0 15px;
+}
+.pilot-md h3 {
+  font-size: 17px;
+  margin: 25px 0 12px;
+}
+.pilot-md h4 {
+  font-size: 15px;
+}
+.pilot-md img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 20px auto;
+  border-radius: 6px;
+}
+.pilot-md table {
+  display: block;
+  overflow: auto;
+  border-collapse: collapse;
+  font-size: 12px;
+  max-width: 100%;
+  margin: 18px 0;
+}
+.pilot-md th,
+.pilot-md td {
+  border: 1px solid #dbe4d6;
+  padding: 8px;
+  min-width: 70px;
+}
+.pilot-md th {
+  background: #edf1e6;
+}
+.pilot-md pre {
+  overflow: auto;
+  background: #eef1e9;
+  padding: 14px;
+}
+.pilot-md blockquote {
+  border-left: 3px solid #b7caa9;
+  margin: 16px 0;
+  padding-left: 14px;
+  color: #687960;
+}
+.pilot-md .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 6px 0;
+}
+.pilot-full-lesson {
+  border-top: 1px solid #dce4d7;
+  padding-top: 20px;
+}
+.pilot-full-lesson > summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 16px;
+}
+.pilot-full-lesson[open] {
+  max-height: 68vh;
+  overflow: auto;
+  padding-right: 10px;
+  scrollbar-width: thin;
+}
+.pilot-muted {
+  font-size: 12px;
+  color: #7e8776;
+  line-height: 1.7;
+}
+.pilot-reveal {
+  width: 100%;
+  text-align: left;
+  margin: 7px 0 18px;
+  color: #527947;
+  font-size: 12px;
+  background: #f0f3e9 !important;
+}
+.pilot-notes {
+  margin-top: 28px;
+  border-top: 1px solid #dce4d7;
+  padding-top: 20px;
+}
+.pilot-notes label {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 9px;
+}
+.pilot-notes button {
+  margin-top: 10px;
+  font-size: 12px;
+}
+.pilot-practice {
+  padding: 33px 27px;
+  background: #fffefa;
+  border-left: 1px solid #e0e6d9;
+  min-height: 100%;
+  position: sticky;
+  top: 0;
+  max-height: 100vh;
+  overflow: auto;
+}
+.pilot-actions {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin: 15px 0;
+}
+.pilot-actions button {
+  font-size: 11px;
+  padding: 7px 10px;
+}
+.pilot-task {
+  border-top: 1px solid #e1e7db;
+  margin-top: 24px;
+  padding-top: 21px;
+}
+.pilot-task h3 {
+  font-size: 16px;
+}
+.pilot-task > small {
+  font-size: 10px;
+  color: #8b937f;
+  display: block;
+}
+.pilot-input-tabs {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  border-top: 1px solid #e4e9df;
+  margin-top: 19px;
+  padding-top: 17px;
+}
+.pilot-input-tabs > span {
+  font-size: 10px;
+  color: #939a8b;
+}
+.pilot-photo-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px dashed #9fb295;
+  border-radius: 7px;
+  padding: 10px 15px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.pilot-photo-button input {
+  display: none !important;
+}
+.pilot-photo {
+  margin: 17px 0;
+  padding: 12px;
+  background: #f3f5ee;
+  border-radius: 7px;
+}
+.pilot-photo img {
+  max-width: 100%;
+  max-height: 300px;
+  display: block;
+  margin: 0 auto 12px;
+  object-fit: contain;
+}
+.pilot-photo button {
+  width: 100%;
+  font-size: 12px;
+}
+.pilot-photo p {
+  font-size: 11px;
+  margin: 8px 0;
+}
+.pilot-field {
+  display: block;
+  font-size: 12px;
+  margin: 18px 0 13px;
+}
+.pilot-field textarea {
+  margin-top: 8px;
+  font-size: 13px;
+}
+.pilot-numbers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 17px 0;
+}
+.pilot-numbers label {
+  font-size: 11px;
+  color: #64715d;
+}
+.pilot-numbers input {
+  margin-top: 5px;
+  font-size: 13px;
+  padding: 9px;
+}
+.pilot-numbers small {
+  display: block;
+  font-size: 10px;
+  margin-top: 4px;
+}
+.pilot-numbers .ok {
+  color: #27744b;
+}
+.pilot-numbers .check {
+  color: #a7752f;
+}
+.pilot-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 11px;
+  margin: 13px 0;
+  color: #66765d;
+}
+.pilot-checkbox input {
+  width: 15px !important;
+  height: 15px;
+  margin: 3px 0 0;
+  flex-shrink: 0;
+  accent-color: #275e44;
+}
+.pilot-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #245b43 !important;
+  color: #fffefa !important;
+  border-color: #245b43 !important;
+  text-decoration: none;
+  border-radius: 7px;
+  padding: 11px 16px;
+  font-size: 13px;
+}
+.pilot-task > .pilot-primary {
+  width: 100%;
+  margin-top: 5px;
+}
+.pilot-support {
+  background: #f1f4e9;
+  border-left: 3px solid #90a77b;
+  padding: 17px;
+  margin: 20px 0;
+}
+.pilot-feedback {
+  border: 1px solid #cedfc5;
+  background: #f0f6e9;
+  border-radius: 10px;
+  padding: 22px;
+  margin-top: 25px;
+}
+.pilot-feedback h3 {
+  margin: 15px 0;
+  font-size: 16px;
+}
+.pilot-feedback p {
+  font-size: 13px;
+}
+.pilot-feedback small {
+  display: block;
+  font-size: 10px;
+  line-height: 1.8;
+  color: #7e8a6d;
+  margin: 10px 0;
+}
+.pilot-feedback > button {
+  font-size: 12px;
+  margin: 8px 0;
+  max-width: 100%;
+}
+.pilot-ai-feedback {
+  border-top: 1px solid #d6e1cf;
+  margin: 15px 0;
+  padding-top: 15px;
+}
+.pilot-ai-feedback > b {
+  font-size: 11px;
+  color: #7c8c69;
+}
+.pilot-page {
+  padding: 43px 40px;
+  max-width: 1080px;
+  margin: auto;
+}
+.pilot-page h1 {
+  font: 500 32px/1.4 inherit;
+  font-family: inherit;
+  letter-spacing: -0.6px;
+  font-size: 32px;
+}
+.pilot-page > p {
+  font-size: 14px;
+  color: #77836e;
+}
+.pilot-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 28px 0;
+}
+.pilot-stat-grid > div,
+.pilot-record,
+.pilot-settings-card {
+  padding: 24px;
+  border: 1px solid #dce4d5;
+  border-radius: 10px;
+  background: #fffef9;
+  margin-bottom: 17px;
+}
+.pilot-stat-grid h3 {
+  font-size: 14px;
+}
+.pilot-stat-grid p {
+  font-size: 12px;
+}
+.pilot-record h3 {
+  font-size: 17px;
+  margin: 10px 0;
+}
+.pilot-record > small {
+  font-size: 11px;
+  color: #909c83;
+}
+.pilot-record.withdrawn {
+  opacity: 0.65;
+}
+.pilot-record > p {
+  font-size: 13px;
+}
+.pilot-record a {
+  font-size: 12px;
+}
+.pilot-record input {
+  margin: 10px 0;
+}
+.pilot-settings-card h2 {
+  font-size: 20px;
+}
+.pilot-settings-card p {
+  font-size: 13px;
+}
+.pilot-settings-card a {
+  margin-bottom: 16px;
+}
+.pilot-settings-card code {
+  word-break: break-all;
+}
+.pilot-page details {
+  padding: 20px;
+  background: #f0f3e9;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+.pilot-page summary {
+  cursor: pointer;
+  font-size: 13px;
+}
+.pilot-search {
+  display: flex;
+  gap: 8px;
+  margin: 20px 0 12px;
+}
+.pilot-search button {
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.pilot-search-result {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin: 14px 0;
+}
+.pilot-search-result b {
+  font-size: 13px;
+}
+.pilot-search-result span {
+  display: block;
+  font-size: 12px;
+  color: #7b8870;
+  margin-top: 7px;
+  white-space: pre-wrap;
+}
+.pilot-page > h2 {
+  margin-top: 30px;
+}
+.pilot-source {
+  padding: 17px 0;
+  border-bottom: 1px solid #dfe5d9;
+  font-size: 13px;
+}
+.pilot-source small {
+  display: block;
+  margin-top: 5px;
+  font-size: 10px;
+  color: #8d9780;
+}
+.pilot-error {
+  color: #a63c34;
+  background: #fff0ec;
+  padding: 14px 18px;
+  font-size: 13px;
+  border-radius: 6px;
+}
+.pilot-alert {
+  margin: 18px 30px;
+  display: flex;
+  justify-content: space-between;
+}
+.pilot-alert button {
+  border: 0;
+  background: none;
+  padding: 0 6px;
+}
+.pilot-notice {
+  padding: 15px 30px;
+  background: #e8f1df;
+  color: #3f6740;
+  font-size: 13px;
+}
+.pilot-running {
+  position: fixed;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  background: #254f3a;
+  color: white;
+  border-radius: 20px;
+  padding: 10px 18px;
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  font-size: 12px;
+  box-shadow: 0 3px 15px #213e3526;
+}
+.pilot-loading {
+  padding: 20vh 10vw;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.spin {
+  animation: pilot-spin 1s linear infinite;
+}
+@keyframes pilot-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.pilot-auth {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 80% 0%, #e3eacb, transparent 65%), #f6f7f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 25px;
+}
+.pilot-auth-card {
+  width: 440px;
+}
+.pilot-auth .pilot-wordmark {
+  margin-bottom: 43px;
+}
+.pilot-auth h1 {
+  font-family: inherit;
+  font-size: 35px;
+  line-height: 1.45;
+  font-weight: 500;
+  margin: 13px 0 18px;
+}
+.pilot-auth p {
+  font-size: 14px;
+  color: #6f7d61;
+  line-height: 1.9;
+}
+.pilot-auth form {
+  padding: 28px;
+  background: #fffef9;
+  border: 1px solid #dde4d2;
+  border-radius: 12px;
+  margin: 25px 0 20px;
+}
+.pilot-auth h2 {
+  font-size: 19px;
+}
+.pilot-auth label {
+  display: block;
+  font-size: 12px;
+  margin: 16px 0;
+}
+.pilot-auth input {
+  margin-top: 7px;
+}
+.pilot-auth .pilot-primary {
+  width: 100%;
+  margin-top: 8px;
+}
+.pilot-auth .pilot-link {
+  border: 0;
+  background: none;
+  font-size: 12px;
+  display: block;
+  margin: 10px auto 0;
+}
+.pilot-auth small {
+  font-size: 11px;
+  color: #869275;
+  line-height: 1.8;
+  display: block;
+}
+.pilot-caution {
+  color: #99662d;
+}
+@media (min-width: 1600px) {
+  .pilot-heading,
+  .pilot-learning {
+    max-width: 1480px;
+    margin: auto;
+  }
+}
+@media (max-width: 1150px) {
+  .pilot-sidebar {
+    width: 205px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .pilot-reading {
+    padding: 28px 25px;
+  }
+  .pilot-practice {
+    padding: 28px 21px;
+  }
+  .pilot-heading {
+    padding: 28px 25px;
+  }
+  .pilot-learning {
+    grid-template-columns: minmax(0, 1fr) 350px;
+  }
+  .pilot-heading h1 {
+    font-size: 26px;
+  }
+}
+@media (max-width: 950px) {
+  .pilot-learning {
+    display: block;
+  }
+  .pilot-practice {
+    position: static;
+    max-height: none;
+    border-left: 0;
+    border-top: 1px solid #dbe4d4;
+    padding: 30px;
+  }
+  .pilot-reading {
+    padding: 30px;
+  }
+  .pilot-full-lesson[open] {
+    max-height: 440px;
+  }
+  .pilot-topic-tabs {
+    flex-wrap: wrap;
+  }
+  .pilot-topic-tabs button {
+    min-width: 130px;
+  }
+  .pilot-stat-grid {
+    grid-template-columns: 1fr;
+  }
+  .pilot-page {
+    padding: 30px 25px;
+  }
+}
+@media (max-width: 650px) {
+  .pilot-shell {
+    display: block;
+  }
+  .pilot-sidebar {
+    width: 100%;
+    height: auto;
+    position: static;
+    padding: 17px 20px;
+  }
+  .pilot-wordmark {
+    font-size: 10px;
+  }
+  .pilot-course-name {
+    display: none;
+  }
+  .pilot-sidebar nav {
+    display: flex;
+    margin-top: 16px;
+    overflow: auto;
+  }
+  .pilot-sidebar nav button {
+    font-size: 11px;
+    white-space: nowrap;
+    padding: 10px;
+    gap: 6px;
+  }
+  .pilot-nav-label {
+    display: none;
+  }
+  .pilot-lessons {
+    display: flex;
+    overflow: auto;
+    max-height: 65px;
+    margin-top: 10px;
+  }
+  .pilot-lessons button {
+    min-width: 150px;
+    font-size: 10px;
+    line-height: 1.5;
+    padding: 8px;
+  }
+  .pilot-user {
+    display: none;
+  }
+  .pilot-top {
+    height: 57px;
+    padding: 0 20px;
+    font-size: 10px;
+  }
+  .pilot-badge {
+    font-size: 9px;
+  }
+  .pilot-heading {
+    padding: 27px 22px 23px;
+  }
+  .pilot-heading h1 {
+    font-size: 24px;
+    line-height: 1.5;
+  }
+  .pilot-topic-tabs {
+    gap: 6px;
+  }
+  .pilot-topic-tabs button {
+    min-width: 90px;
+    padding: 9px;
+    font-size: 11px;
+  }
+  .pilot-topic-tabs small {
+    font-size: 9px;
+  }
+  .pilot-reading,
+  .pilot-practice {
+    padding: 28px 22px;
+  }
+  .pilot-reading > h2 {
+    font-size: 22px;
+  }
+  .pilot-full-lesson[open] {
+    max-height: 420px;
+  }
+  .pilot-md {
+    font-size: 14px;
+  }
+  .pilot-page {
+    padding: 30px 22px;
+  }
+  .pilot-page h1 {
+    font-size: 27px;
+  }
+  .pilot-alert {
+    margin: 15px;
+  }
+  .pilot-running {
+    max-width: 90%;
+    width: max-content;
+  }
+  .pilot-auth h1 {
+    font-size: 30px;
+  }
+  .pilot-stat-grid > div,
+  .pilot-record,
+  .pilot-settings-card {
+    padding: 20px;
+  }
+  .pilot-page > small {
+    display: block;
+  }
+  .pilot-search {
+    flex-wrap: wrap;
+  }
+  .pilot-search input {
+    flex: 1;
+    min-width: 180px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spin {
+    animation: none;
+  }
+}
+.pilot-routes[hidden] {
+  display: none;
+}
