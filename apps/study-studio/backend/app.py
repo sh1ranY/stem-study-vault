@@ -12,13 +12,16 @@ from typing import Optional, Dict, List
 
 from dotenv import load_dotenv
 from fastapi import FastAPI,HTTPException,UploadFile,File,Request
-from fastapi.responses import Response,FileResponse
+from fastapi.responses import Response,FileResponse,JSONResponse
+from fastapi.exceptions import RequestValidationError
+from fastapi.exception_handlers import http_exception_handler, request_validation_exception_handler
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from pydantic import BaseModel,Field,ConfigDict
 from .content import prepared_unit,SOURCES,checkpoint,transfer,public_task,TUTOR
 from .assessment import assess
 from . import provider
+from .deployment import settings as deployment_settings
 
 ROOT=Path(__file__).resolve().parents[1]
 load_dotenv(ROOT/'.env')
@@ -53,18 +56,42 @@ def public_session(session):
     data['tasks']=[public_task(t) for t in session['tasks']]
     return data
 
-app=FastAPI(title='STEM Study Vault · Learning Studio',docs_url='/api/docs',redoc_url=None)
-app.add_middleware(TrustedHostMiddleware,allowed_hosts=['localhost','127.0.0.1','testserver'])
+DEPLOYMENT=deployment_settings()
+app=FastAPI(title='STEM Study Vault · Learning Studio',docs_url=None if DEPLOYMENT.hosted else '/api/docs',openapi_url=None if DEPLOYMENT.hosted else '/openapi.json',redoc_url=None)
+app.add_middleware(TrustedHostMiddleware,allowed_hosts=list(DEPLOYMENT.hosts))
+
+@app.exception_handler(HTTPException)
+async def localized_error(request, exc):
+    if not request.url.path.startswith('/api/pilot/'):
+        return await http_exception_handler(request, exc)
+    from .pilot.localization import error_message
+    language='en' if request.headers.get('accept-language','').startswith('en') else 'zh-CN'
+    return JSONResponse(status_code=exc.status_code,content={'detail':error_message(str(exc.detail),exc.status_code,language)},headers=exc.headers)
+
+@app.exception_handler(RequestValidationError)
+async def invalid_input(request, exc):
+    if not request.url.path.startswith('/api/pilot/'):
+        return await request_validation_exception_handler(request,exc)
+    # Never echo supplied passwords, images or student writing in validation responses.
+    english=request.headers.get('accept-language','').startswith('en')
+    return JSONResponse(status_code=422,content={'detail':'Check the required fields and input lengths. Passwords need at least 10 characters.' if english else '请检查必填项与输入长度。密码至少需要 10 位。'})
 
 @app.middleware('http')
 async def local_origin(request:Request,call_next):
     origin=request.headers.get('origin')
-    if request.url.path.startswith('/api') and origin and origin not in ('http://127.0.0.1:8765','http://localhost:8765','http://127.0.0.1:5177','http://localhost:5177','http://testserver'):
+    if DEPLOYMENT.hosted and request.method in ('POST','PUT','PATCH'):
+        length=request.headers.get('content-length')
+        if length is None or not length.isdigit(): return Response('Content-Length required.',status_code=411)
+        limit=11*1024*1024 if request.headers.get('content-type','').startswith('multipart/form-data') else 256*1024
+        if int(length)>limit: return Response('Request too large.',status_code=413)
+    if request.url.path.startswith('/api') and origin and origin not in DEPLOYMENT.origins:
         return Response('This local prototype only accepts its own browser origin.',status_code=403)
     if request.url.path.startswith('/api') and request.headers.get('sec-fetch-site')=='cross-site':
         return Response('Cross-site requests are not supported.',status_code=403)
+    if DEPLOYMENT.hosted and request.url.path.startswith('/api/') and not request.url.path.startswith('/api/pilot/') and request.url.path!='/api/health':
+        return Response('Legacy APIs are not available in the hosted pilot.',status_code=404)
     # Once pilot accounts exist, legacy prototype evidence is restricted to the owner.
-    if request.url.path.startswith('/api/') and not request.url.path.startswith('/api/pilot/') and request.url.path not in ('/api/config','/api/docs','/api/openapi.json'):
+    if request.url.path.startswith('/api/') and not request.url.path.startswith('/api/pilot/') and request.url.path not in ('/api/config','/api/docs','/api/openapi.json','/api/health'):
         from .pilot import store as pilot_store
         from .pilot.routes import user as pilot_user
         if pilot_store.listing('user','auth'):
@@ -75,6 +102,9 @@ async def local_origin(request:Request,call_next):
     response=await call_next(request)
     response.headers['X-Content-Type-Options']='nosniff'
     response.headers['Referrer-Policy']='no-referrer'
+    response.headers['X-Frame-Options']='DENY'
+    response.headers['Permissions-Policy']='camera=(self), microphone=(), geolocation=()'
+    if DEPLOYMENT.hosted: response.headers['Strict-Transport-Security']='max-age=31536000'
     if request.url.path.startswith('/api'): response.headers['Cache-Control']='no-store'
     return response
 
@@ -101,6 +131,10 @@ class Ask(StrictModel):
 class Correction(StrictModel):
     attempt_id:str
     reason:str=Field(min_length=1,max_length=2000)
+
+@app.get('/api/health')
+def health():
+    return {'status':'ok'}
 
 @app.get('/api/config')
 def config():

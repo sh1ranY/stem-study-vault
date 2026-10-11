@@ -1,0 +1,14 @@
+*
+!package.json
+!package-lock.json
+!tsconfig.json
+!tsconfig.node.json
+!vite.config.ts
+!index.html
+!requirements.txt
+!src/
+!src/**
+!backend/
+!backend/**
+backend/**/__pycache__
+backend/**/*.pyc
