@@ -1,5 +1,7 @@
 # ELEC270 local pilot
 
+This document describes local operation. The subsequent bilingual invited-pilot milestone and hosted setup are documented in [DEPLOYMENT.md](DEPLOYMENT.md); validation history is in [VALIDATION.md](VALIDATION.md).
+
 Run `./start.command`, then open http://127.0.0.1:8765. The first user creates the local owner account. Owners can create one-time invitations for separate learners on this computer. Original prototype remains at `/?prototype=1`, restricted to the owner after pilot setup.
 
 ## Delivered
