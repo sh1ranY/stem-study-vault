@@ -4,6 +4,14 @@ Use when attempts need to survive across sessions or drive multiple teaching upd
 
 For the first implementation, use **one current snapshot** at `Maintenance/Learning/record.json` rather than several independently written state files. Keep the existing course profile for explicitly stated preferences. Add a generated `Summary.md` when useful; it is derived from the snapshot, not a second authority. Adapt paths to an existing vault and preserve personal files.
 
+## Optional writer
+
+The optional [ELEC270 continuation pilot](cross-chat-continuation.md) now provides
+a writer/resume helper with revision checks and atomic record replacement. Its
+`continuation` extension is ignored by the general v1 validator. The restrictions
+below describing the read-only `learning_tools.py` checker still apply to that
+checker; the new writer is deliberately limited to its own single-unit records.
+
 ## Version 1 fields
 
 | Field | Contract |

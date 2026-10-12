@@ -43,7 +43,31 @@ This revision adds optional diagnosis/adaptation instructions, subject-specific 
 
 The new behavioral scenarios remain evaluation protocols. No new independent-agent forward run, full-course output assessment, fresh installation trial or learner study was performed. No automatic grading, adaptive model training, record-writing/migration service, concurrency control or learning efficacy is claimed. Snapshot writing is an instructed, checked workflow performed by the agent; the new helper only reads.
 
-## What those checks do not establish
+## Cross-chat continuation pilot (2026-10-12)
+
+The ELEC270 pilot now includes a separate revision-checked writer and resume helper;
+the earlier read-only limitation still describes `learning_tools.py`. All 57 Python
+tests and 4 math-checker tests passed, with no skips; 250 reference formula spans
+parsed successfully. A synthetic separate-process learning/correction loop and a
+desktop/mobile lesson preview were checked. See the [observed report](tests/results/2026-10-12-continuation.md)
+for exact scope and limits. The actual learner record remains unassessed.
+
+## Selected upstream memory integration (2026-10-12)
+
+Five Matt Pocock modules are archived at commit
+`49dd158d1076134a641b33efb035946536778336`; all 14 selected files, including the
+license and UI metadata, matched the checkout byte for byte and their recorded
+SHA-256 hashes. The standalone skill carries the same full MIT notice.
+
+The updated Skill passed the skill-creator validator. Local Markdown targets in
+22 active/documentation files resolved, and all Skill-relative references stayed
+inside the standalone Skill folder. All 12 pre-existing private pilot/validation
+files retained their hashes. `git diff --check` passed. This integration changed
+documentation and packaged upstream source, not executable learning behavior;
+the preceding continuation tests describe that unchanged implementation. No new
+independent tutor run or learning-effectiveness result is claimed.
+
+## Overall limitations
 
 - No controlled learning study, time-saving measurement or grade improvement has been performed.
 - One fresh-agent forward run was performed on a small original three-lecture course; see the [observed-output report](tests/results/2026-09-22-forward-test.md). Other scenarios in `tests/behavioral-evaluation.md` remain plans, not claimed results. This is not a repeated evaluation suite or a full-semester test.

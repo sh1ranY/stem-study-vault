@@ -1,5 +1,9 @@
 # STEM Study Vault
 
+ELEC270 跨聊天续学试点已加入：在同一个本地学习记录上保存作答、帮助与评阅，更换聊天后从下一步接续；错误评阅可追溯更正。见[使用流程](skills/stem-study-vault/references/cross-chat-continuation.md)和[原创单元](skills/stem-study-vault/references/elec270-continuation-lesson.md)。这是 Skill 的本地试点，尚未与 Study Studio 自动同步；模拟验证不代表真实学习效果。
+
+项目与课程记忆已融入同一个 Skill：复用现有术语、按批次记录进度、保存重要决定的理由，并用持久交接入口继续工作。见[记忆管理规则](skills/stem-study-vault/references/project-memory.md)。仓库保留了 [Matt Pocock 的五个相关模块源码](third_party/mattpocock-skills/README.md)、固定版本与 MIT 许可；使用本 Skill 无须另装这些模块。
+
 **把本地课件、习题和试卷，变成适合自己理解、练习和复习的 Obsidian 知识库。**
 
 面向理工科及其他定量课程学生的 Codex skill。默认把资料写成**可作为主教材自学的讲义**：保留原课件中的实质内容，连贯解释概念、原因和联系，展开关键推导，并安排独立练习。后续可以加入新课件、补充薄弱概念，或根据自己的做题反馈调整复习路线。

@@ -1,6 +1,6 @@
 ---
 name: stem-study-vault
-description: Build and maintain personalized Obsidian learning vaults for STEM courses from local lecture slides, exercise sheets and past papers. Use for source-grounded lessons, derivations, linked practice, revision and incremental course updates; not for isolated homework answers or generic note organization.
+description: Build and maintain personalized Obsidian learning vaults for STEM courses from local materials. Use for source-grounded lessons, linked practice, revision, incremental course builds and resuming saved learning across chats; not for isolated homework answers or generic note organization.
 ---
 
 # STEM Study Vault
@@ -30,6 +30,8 @@ For a large course, work through bounded batches while keeping a course-wide pro
 
 ## Keep the course useful over time
 
+For multi-session course builds, agreed terminology or consequential decisions, handoffs, and resuming saved work, read [project-memory.md](references/project-memory.md). It maps each fact to the existing authoritative artifact and provides small planning/handoff patterns. Use it when those branches arise; ordinary explanations do not need a project-memory setup.
+
 On update, compare source identity and content hashes; inspect what changed before revising affected lessons, question mappings and navigation. Preserve personal annotations and stable links. Maintain a small progress record listing completed batches, source versions, unresolved gaps and next work so another session can resume without rebuilding the course. See [verification-and-updates.md](references/verification-and-updates.md).
 
 If asked to shift to exam preparation, use the existing concept map and observed learning gaps to choose practice. Historical paper frequency describes the supplied sample, not future exam probability. Keep the distinction between studying, reviewing and attempting an unseen paper.
@@ -37,6 +39,8 @@ If asked to shift to exam preparation, use the existing concept map and observed
 When new attempts arrive, update the affected course objective, teaching and next check; preserve original observations and make corrections traceable. Use [learning-records.md](references/learning-records.md) for structured evidence when useful. Keep unobserved retention and unrelated subjects unassessed. Use [subject-design.md](references/subject-design.md) for domain-specific tasks; read [strategy-extraction.md](references/strategy-extraction.md) only when selecting or maintaining reusable teaching strategies. These resources are self-contained; Nuwa is a method reference, not an installation dependency.
 
 ## Helpers and output conventions
+
+For cross-chat continuation of the ELEC270 ramp/plateau/jump pilot, follow [cross-chat-continuation.md](references/cross-chat-continuation.md). Read the canonical record through `resume` before teaching, persist displayed help, and save actual attempts with the revision-checked helper. Summaries are derived pointers, never another evidence authority. Do not initialize over existing records or mix synthetic demonstrations with learner data.
 
 Use [tools.md](references/tools.md) for the bundled Python helper. Inventory, initialization, link checks and preservation checks use only the standard library. Optional PDF/PPTX text extraction uses dependencies in `scripts/requirements-extract.txt`. If equivalent host tools already work, use them rather than reinstalling tools.
 

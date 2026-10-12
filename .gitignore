@@ -9,3 +9,6 @@ dist/
 .env.*
 
 node_modules/
+
+# Private local learning records and course entry points.
+.local/

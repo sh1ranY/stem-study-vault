@@ -1,0 +1,16 @@
+{
+  "course_id": "ELEC270",
+  "unit_id": "ramps-plateaus-jumps-v1",
+  "title": "斜坡、平台与跳变",
+  "source": "原创试点任务，非官方讲义或试卷；沿用 signals 示例的定义，新增反向斜率迁移题。",
+  "lesson": "../elec270-continuation-lesson.md",
+  "objective": {"id": "ramps", "description": "区分斜率与高度，用斜坡和阶跃构造分段信号并核对端点"},
+  "tasks": [
+    {"id": "d1", "objective_ids": ["ramps"], "kind": "diagnosis", "version": "1", "source_version": "authored-ramps-v1",
+     "prompt": "约定 r(t)=max(t,0)，u(t)=0（t<0），u(t)=1（t≥0）。先算 r(t−2) 在 t=1,2,5 的值，再算 x(t)=r(t)−r(t−2) 在 t=1,3,5 的值。解释 t≥2 后为何形成平台或回到零；请写出推理。"},
+    {"id": "t1", "objective_ids": ["ramps"], "kind": "transfer", "version": "1", "source_version": "authored-ramps-v1",
+     "prompt": "约定 r(t)=max(t,0)，u(0)=1。信号在 t<1 为零；从 t=1 起以斜率 2 增长，到 t=4 停止增长；从 t=6 起跳回零。用 r 和 u 表达，计算 t=2,5,6,8 的值，说明每项改变的是斜率还是高度。"},
+    {"id": "t2", "objective_ids": ["ramps"], "kind": "transfer", "version": "1", "source_version": "authored-ramps-v1",
+     "prompt": "约定 r(t)=max(t,0)，u(0)=1。信号在 t<0 为零；t=0 瞬间升至高度 4，从 t=1 起以斜率 −2 下降，到 t=3 后保持为零。用 r 和 u 表达，算 t=0,1,2,3,5 的值，并解释为何 t=3 需要增加斜率，而不需要再减一个高度。"}
+  ]
+}

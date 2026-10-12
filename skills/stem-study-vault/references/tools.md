@@ -19,6 +19,14 @@ Inventory/snapshot records relative names, sizes and SHA-256 hashes, skipping hi
 
 `python3 scripts/learning_tools.py "/path/to/record.json"` checks the optional [version 1 learning record](learning-records.md) without changing it. It needs only Python 3.9+ and prints a structural result without student responses. Exit codes are 0 for a structurally valid record, 1 for a record violation and 2 for a read/JSON error. It does not grade, infer mastery or create/update records. An old vault without learning records does not need this check.
 
+## Optional cross-chat continuation
+
+The ELEC270 local continuation pilot adds `scripts/continuation_tools.py` for
+revision-checked writes and fresh-chat resume. Its `init`, `resume`, `present`,
+`help`, `attempt`, `correct` and `skip` commands are documented in
+[cross-chat-continuation.md](cross-chat-continuation.md). This writer uses macOS/Linux
+locks; the read-only validator above remains unchanged and portable.
+
 ## Optional extraction
 
 If no suitable PDF/PPTX reader is already available, install the extraction dependencies in an isolated environment using the host's normal package workflow:

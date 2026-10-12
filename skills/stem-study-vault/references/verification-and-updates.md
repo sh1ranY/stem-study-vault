@@ -18,6 +18,8 @@ Give the entry note, covered scope, a concrete next learning action and material
 
 ## Incremental updates
 
+For a batch spanning sessions or an interrupted handover, use [project-memory.md](project-memory.md) to update the existing progress entry and leave actionable pointers. Keep learner evidence in its record system and course-production status in Progress.md.
+
 1. Read `Learning profile.md`, `Maintenance/Progress.md` and the current source/question maps. If structured learning records exist, read the relevant objective's evidence and current decisions using [learning-records.md](learning-records.md); otherwise continue normally without creating empty records.
 2. Generate a fresh inventory outside the source tree. Compare relative identities and hashes with the prior inventory. A renamed identical file is not a new body of content; a same-named changed file is a new version to inspect.
 3. Read changed sources; identify affected units and questions. Preserve old source identities/versions where needed to explain historical references. Do not infer that a changed hash means a changed conclusion.
