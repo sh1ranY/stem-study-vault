@@ -1,0 +1,57 @@
+{
+  "checks": 9,
+  "passed": 9,
+  "results": {
+    "ctft_exp_two_sided": {
+      "atol": 2e-05,
+      "max_abs_error": 1.3353672134731745e-06,
+      "passed": true
+    },
+    "parseval_exp_two_sided_frequency": {
+      "atol": 1e-06,
+      "max_abs_error": 2.1218112855603266e-07,
+      "passed": true
+    },
+    "parseval_exp_two_sided_time": {
+      "atol": 3e-06,
+      "max_abs_error": 2.666663795558577e-06,
+      "passed": true
+    },
+    "rect_convolution_area": {
+      "atol": 0.013,
+      "max_abs_error": 8.810729923425242e-13,
+      "passed": true
+    },
+    "rect_convolution_frequency": {
+      "atol": 0.013,
+      "max_abs_error": 0.007255361714090479,
+      "passed": true
+    },
+    "rect_convolution_time": {
+      "atol": 0.0041,
+      "max_abs_error": 0.0019999999994486685,
+      "passed": true
+    },
+    "sampling_alias_fft_peak_hz": {
+      "atol": 1e-12,
+      "max_abs_error": 0.0,
+      "passed": true
+    },
+    "sampling_alias_identity": {
+      "atol": 3e-12,
+      "max_abs_error": 2.0877188866563756e-12,
+      "passed": true
+    },
+    "sampling_normalized_frequencies": {
+      "atol": 1e-14,
+      "max_abs_error": 0.0,
+      "passed": true
+    }
+  },
+  "validation_date": "2026-10-14",
+  "environment": {
+    "python": "Python 3.12.14",
+    "numpy": "2.5.4",
+    "matplotlib": "3.11.2"
+  }
+}

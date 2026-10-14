@@ -158,3 +158,7 @@ python3 skills/stem-study-vault/scripts/vault_tools.py check --vault examples/de
 ## Optional formula checker / 可选公式检查
 
 A read-only KaTeX syntax checker is now included. See [usage and limitations](skills/stem-study-vault/references/tools.md#optional-formula-syntax-check). Run `npm ci`, `npm run check:math` and `npm run test:math` from this repository.
+
+## Signals and systems lab / 信号与系统实验
+
+[Standalone numerical lab](examples/signals-lab/README.md): Fourier transforms, Parseval energy, convolution and sampling aliasing, with runnable checks and plots.
