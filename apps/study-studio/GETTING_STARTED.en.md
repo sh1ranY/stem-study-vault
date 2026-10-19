@@ -37,6 +37,16 @@ Drafts autosave. Course switching flushes the answer draft and saves the current
 
 Each topic has diagnosis, practice and review families with up to 24 bounded variants each. These are limited answer checks, not whole-course assessment. Arbitrary SQL, programs, diagrams and free-form proofs are not automatically graded. AI advice cannot establish mastery or long-term retention. The interface, original tasks and demo notes are bilingual; imported materials retain their source language.
 
+## Explore image processing in ELEC270
+
+Choose **Explore image processing** in the sidebar or the ELEC270 home card. A direct link is `/?course=ELEC270&unit=image-filtering`. This original unit is included in normal local mode and demo mode; it needs no private course files.
+
+Follow prediction, the interactive image lab, explanations with optional foundation bridges, four bounded checks, and reflection/course practice. The synthetic grayscale image and its brightness profile use the same calculation. Noise is repeatable; boundary handling and spatial-frequency units are stated. Pixel signals, convolution, Euler's formula, frequency response and recovery limits are available when needed. Explanations, diagrams, controls, questions, hints, solutions and feedback are bilingual.
+
+Your stage, experiment settings, predictions, reflections and answer drafts persist by account. Switching language keeps the same question IDs. Four check families cover local smoothing, frequency/detail, transfer to time signals, and non-unique recovery, with up to eight variants each. Numerical answers and selected reasons are checked locally; free writing is saved, not semantically graded. Help and previous feedback remain recorded, so later same-family variants are treated as supported practice. These limited checks do not certify course mastery or delayed retention.
+
+The unit makes no AI calls. Its final course-practice link opens the existing convolution exercise and paper/photo workflow. Only a separate, explicit request for transcription or AI advice can use a configured model. Personal exports include the unit's activity and answer records. Wait for successful saving before refreshing or closing.
+
 ## Normal local mode and optional AI
 
 Run `python3 start.py` (Windows: `py -3 start.py`), or double-click `start.command` / `start.cmd`. Normal mode opens **http://127.0.0.1:8765/** and defaults to `data/`. Existing courses are preserved; only missing courses receive demos.

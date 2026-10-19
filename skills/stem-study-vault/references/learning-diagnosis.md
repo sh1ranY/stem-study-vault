@@ -25,6 +25,8 @@ Offer a skip route. With no attempt, use the stated background and existing teac
 
 This is a design framework, not a validated six-factor scale. Keep dimensions course/objective-specific and leave unobserved parts unknown. Time taken, skipping or requesting help may reflect context or access difficulties; they do not by themselves measure attitude. Verbal ability, algebraic manipulation, spatial reasoning and visual preference are different observations.
 
+Keep three kinds of information separate: **learner declarations** (interests, goals and preferences), **observed evidence** (actual attempts, reasoning, help and corrections), and **tentative decisions** (a proposed gap and the next teaching action). Interest, enjoyment, time on a page and operating a demonstration do not establish conceptual understanding or independent performance. Ask for an explanation, prediction or new task when that is the capability being assessed. A self-reported interest can guide an application choice without becoming a proficiency judgment.
+
 ## The decision must change something concrete
 
 For each material adjustment, record: **objective → observed evidence → provisional explanation and alternatives → teaching change → new verification task**. A longer generic lesson is not enough.
@@ -36,6 +38,8 @@ Examples:
 - A student treats a composite key as making each column unique. Contrast allowed rows, link them to the business rule and DDL, then move to a new relationship. Do not diagnose SQL syntax from a conceptual answer alone.
 
 Use [strategy-extraction.md](strategy-extraction.md) for reusable strategies and [subject-design.md](subject-design.md) for task design. Preserve common content goals and rigor; a weak representation is often something to develop, not avoid permanently.
+
+Adjust the missing prerequisite, explanation format, depth and support level separately. For example, confusing high frequency with noise calls for a clean fine-texture counterexample and a new prediction, not an automatic classification as a “visual learner” or a full-course restart. A declaration of liking pictures does not justify hiding algebra or derivations. Make the reason for a recommendation understandable and let the learner choose another route.
 
 ## Follow-up and corrections
 

@@ -16,6 +16,8 @@ Offer sensible defaults instead of requiring a long questionnaire:
 | Personal notes | Preserve existing user-authored material and its dependencies |
 | Exams | Ask which, if any, should remain unseen before distributing their questions |
 
+When designing an application-led experience, reuse any known interests and ask for one phenomenon or practical problem the learner would like to understand, only if the choice changes the lesson. Treat their degree or profession as a clue for suggested contexts, not an ability label or a restriction on interests. Keep the shared course goals available and retain a direct route to systematic study or exam practice. Follow [interest-and-applications.md](interest-and-applications.md) for application and bridge design.
+
 Source and target paths are required for file work; ask rather than inventing them. If the user wants a new vault but has not selected a destination, suggest a specific new folder in the authorized workspace. If a source-only task is clear, inspect sources while the target question is pending.
 
 ## Work with incomplete inputs
@@ -32,6 +34,8 @@ Choose a representative concept with a manageable prerequisite chain. Include on
 
 Do not require a learner to complete a quiz before delivering authorized content. In the absence of performance evidence, mark readiness as **unassessed** and state the working assumptions. A request to build the full course is sufficient authorization to continue construction.
 
-Keep a short learning profile: goals, background, language, time constraints if provided, practice preferences, protected material and evidence from actual feedback. Avoid personal identifiers unrelated to learning. If a preference changes, update it once and apply it to future work; do not rewrite an entire accepted course unnecessarily.
+Keep a short learning profile: goals, background, language, time constraints if provided, current interests, access or interaction needs, practice preferences and protected material. Keep learner declarations distinct from observed performance and tentative teaching decisions. A clicked application is not a permanent interest; a preferred explanation is not a demonstrated learning advantage. Avoid personal identifiers unrelated to learning. If a preference changes, update it once and apply it to future work; do not rewrite an entire accepted course unnecessarily.
+
+Offer prerequisite refreshers, representation choices and deeper derivations independently. A student may need a graphical refresher followed by algebraic reasoning; “foundations,” “visual” and “algebraic” are not mutually exclusive student types. Collect further information through useful work rather than requiring a long intake questionnaire.
 
 For an optional course-related diagnostic, follow [learning-diagnosis.md](learning-diagnosis.md). Reuse existing attempts before requesting new ones. Offer a small current-unit task with a skip route; do not ask a student to label their own cognitive ability. Ask for confidence or the uncertain step before showing feedback when it helps interpret the attempt. A stated preference is not evidence that matching instruction to that preference improves learning.

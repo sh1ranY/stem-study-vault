@@ -420,6 +420,11 @@ def export(u=Depends(user)):
         md+='## 分步教学 / Guided learning\n\n讲解后的检查，不等于独立掌握。 / Guided checks do not establish independent mastery.\n\n'
         for g in groups['guided-check']:
             md+=f'- {g["at"]} · {g["concept_id"]} · {g["language"]} · {g["mode"]} · '+('符合判据 / Check passed' if g['result']['passed'] else '待核对 / Needs review')+'\n'
+    if groups['image-check']:
+        md+='## 图像处理应用单元 / Image-processing application unit\n\n数值与所选理由的限定检查；文字笔记未自动评分，长期保持未验证。 / Bounded number-and-reason checks; written notes are ungraded and retention is unassessed.\n\n'
+        for check in sorted(groups['image-check'],key=lambda r:r['at']):
+            md+=f'- {check["at"]} · {check["kind"]} · {check["language"]} · {check["result"]["status"]}\n'
+            if check.get('working'): md+='\n'+check['working']+'\n\n'
     blob=io.BytesIO()
     with zipfile.ZipFile(blob,'w',zipfile.ZIP_DEFLATED) as z:
         z.writestr(code+' 学习记录.md',md)
@@ -535,3 +540,6 @@ def guided_history(u=Depends(user)):
 
 from .workspace_routes import create_router
 router.include_router(create_router(user, required, fail, LOCK, current))
+
+from .image_routes import create_router as create_image_router
+router.include_router(create_image_router(user, required, fail, LOCK, current, teaching_language, event))
