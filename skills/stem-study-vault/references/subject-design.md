@@ -8,6 +8,8 @@ For the current unit, identify each important source obligation and the action t
 
 Each task needs a stable ID and version, target objective, complete local inputs, source/adapted/authored identity, acceptable answers or reasoning criteria, likely alternative error explanations, optional hints and a new check. Declare whether inputs reset or continue. Distinguish a deliberately unseen check from a worked or repeated question.
 
+When using a professional application, specify the decision, variables and constraints that make the setting meaningful. Changing a noun or illustration alone is not a different application. Check both the practical interpretation and the course operation it depends on; keep the capability claim as narrow as the actual task. For conceptual links across courses, identify whether each link is a prerequisite, derivation basis, shared structure, application or analogy and explain its role at the point of use; follow [interest-and-applications.md](interest-and-applications.md).
+
 Separate composite failures when needed: simpler arithmetic, clarified language or a direct prerequisite task can reveal whether the main concept is actually missing. Accept equivalent correct methods and inspect reasoning as well as final answers. Never make an exact wording match the sole rubric for an open explanation.
 
 ## Three domain patterns

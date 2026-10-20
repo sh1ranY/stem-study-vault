@@ -24,6 +24,8 @@ Use a textbook voice: precise, readable sentences that develop one idea and lead
 
 Introduce a concept through the problem it resolves; explain its meaning in the current setting; connect it to the mathematical formulation; then show what it lets the learner infer. Do not force these functions into four little headings for every concept. Use headings at natural conceptual boundaries and lists/tables where the information is actually parallel. Keep derivation and comparison tables when useful, rather than imposing a ban on all lists.
 
+For an interest-led or multimedia unit, use [interest-and-applications.md](interest-and-applications.md) to connect the opening phenomenon to a prediction, observation or operation, explanation and a changed task. Provide a meaningful stopping point and a route into the common lesson, a relevant prerequisite or course practice. Engagement activities supplement the developed account; they do not replace its definitions, conditions, derivations or independent work.
+
 For contrastive concepts, keep the comparison dimension explicit: what is chosen, what is fixed, what is optimized, and what question each model answers. Saying “A fixes income, B fixes utility” can summarize an explanation; it cannot replace the explanation of why the two experiments differ.
 
 A short recap belongs after the developed account. Do not compress an entire lecture into “key points → one worked example → one self-test” when its sources contain multiple distinct teaching units. Do not pad with repeated reassurance, rhetorical questions, unrelated analogies or statements of importance. Useful density means retaining distinct explanatory content; neither word count nor the absence of paragraph breaks measures it.

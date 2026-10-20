@@ -65,3 +65,64 @@ GitHub Actions now defines Python 3.9/3.12 tests, frontend clean install/build, 
 - The normal local service was restarted and its existing signed-in account, ELEC270 course and new three-course selector loaded successfully. No synthetic answers were submitted into the personal production database. A private pre-import SQLite/assets backup was made outside the repository.
 
 Limitations: native Windows setup and a clean second physical computer were not tested. The launcher was exercised on macOS with a fresh demo data directory, and a subprocess test covers missing-directory setup. Imported prose is not automatically translated. Nine original starter topics do not constitute full course/exam coverage or arbitrary SQL/program grading. Real handwriting recognition, AI feedback quality and learning benefits still require separate evaluation. Cloud deployment remains deferred.
+
+## 2026-10-19 — interest-led image-processing unit
+
+- Added one original ELEC270 unit in both normal and demo mode: predict, change a
+  synthetic image, explain the effect, use optional bridges, answer bounded
+  checks, and reflect or continue to existing course practice. Five bridges cover
+  pixels, convolution, Euler's formula, frequency and non-unique recovery.
+  Four question families have eight checked variants each. Prose, figures,
+  controls, questions, hints, solutions and deterministic feedback are bilingual.
+- On the original development checkout, the full isolated Studio suite passed
+  **117 tests** and the root repository suite passed **57 tests**, without skips.
+  That checkout also contains separately developed curriculum and continuation
+  work; it is not the baseline of this focused PR to main.
+- On this publication branch, isolated from those earlier changes and based on
+  main at `554ebd0`, **103 Studio tests** and **45 root tests** passed without skips.
+  Clean dependency installs, **6 image-lab tests**, **4 math-checker tests** and
+  the production TypeScript/Vite build passed. Only the home-view integration
+  and release documentation needed adjustment to the main baseline; the unit's
+  content, image calculations and backend logic are unchanged.
+- Six numerical image-lab tests independently
+  check constant preservation, separable sinusoidal gain, periodic impulse
+  handling, information loss, reproducible noise and matching row samples.
+  Four existing math-checker self-tests passed. Production TypeScript/Vite build
+  and `git diff --check` passed. Image tests are included in GitHub Actions;
+  remote checks for the final PR revision are reported by GitHub Actions.
+- Runtime extraction checked **466 formulas** with the existing offline KaTeX
+  validator: 114 in 270 frontend strings and 352 in 292 backend strings covering
+  all variants, languages, hints, solutions, reasons and feedback. Rendering
+  syntax checks are separate from the mathematical review and numerical oracles.
+- Browser acceptance used a separate temporary demo database and synthetic
+  account. Observed: prediction and controls retained; Chinese/English switching
+  preserves unsubmitted numeric expressions and selected reasons; correct and
+  incorrect feedback; suggested bridge and return to the original question;
+  changed-parameter retry with supported-practice status; hint exposure; four
+  question families; records entry and saved reflection after refresh; conflict
+  detection without overwriting another window, with explicit saved-version
+  recovery; course isolation; and handoff to the existing typed/photo practice
+  interface. No live photo recognition or AI feedback was requested.
+- At 390px, the page width equals the viewport width. Image comparisons, sliders,
+  profiles, labels and reading text were visually inspected; small-screen plot
+  labels were enlarged. Desktop Chinese and mobile English screenshots are stored
+  locally under ignored `data/qa-image-unit/`. This is viewport testing, not a
+  physical phone or screen-reader acceptance test.
+- A refresh within the 450ms autosave window initially lost input. A synchronous
+  beforeunload guard now covers pending edits, queued writes and unresolved save
+  failures; save errors no longer show a successful-save status. Retention after
+  the refresh attempt and after a completed save was observed in the in-app
+  browser; its native warning dialog was not exposed by the automation interface.
+  Actual close/termination behaviour on other browsers remains unverified.
+- The real local service was backed up and restarted with the new endpoint;
+  `/api/health` returned `ok`, and unauthenticated unit requests returned 401.
+  Test activity was confined to the separate database. Private course files,
+  translation caches and real attempts were not replaced. No paid API calls,
+  quota resets, cloud deployment or publishing occurred in this implementation.
+
+Limitations: checks grade only bounded numbers and selected reasons. Student
+prose is stored, not semantically graded. Reading, interest and support history
+are not whole-course mastery or retention evidence. The unit is a teaching
+prototype awaiting actual student and professor feedback; it does not establish
+that personalised learning or engagement has improved. The wider course library
+and Skill learning records retain their existing scope.

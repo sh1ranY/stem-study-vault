@@ -4,6 +4,8 @@ import { useLocale, LanguagePicker } from "./Locale";
 import { useEffect, useRef, useState } from "react";
 import Md from "./PilotMarkdown";
 import GuidedLearning, { GuidedHistory } from "./GuidedLearning";
+import ImageLearning, { type ImageLearningHandle } from "./ImageLearning";
+import ImageLearningEntry from "./ImageLearningEntry";
 import {
   BookOpen,
   Camera,
@@ -11,6 +13,7 @@ import {
   ChevronRight,
   FileText,
   Leaf,
+  Images,
   LoaderCircle,
   LogOut,
   Search,
@@ -62,8 +65,9 @@ export default function Pilot() {
     [state, setState] = useState<State | null>(null);
   const [courses, setCourses] = useState<{code:string;title:string;mode:string}[]>([]);
   const draftRef = useRef<DraftHandle>(null);
+  const imageRef = useRef<ImageLearningHandle>(null);
   const submission = useRef({ signature: "", id: newId() });
-  const [view, setView] = useState("home"),
+  const [view, updateView] = useState(() => new URLSearchParams(location.search).get("unit") === "image-filtering" ? "images" : "home"),
     [topic, setTopic] = useState("ramps"),
     [lesson, setLesson] = useState<Lesson | null>(null),
     [route, setRoute] = useState("visual"),
@@ -94,11 +98,19 @@ export default function Pilot() {
   const [confirmDelete, setConfirmDelete] = useState(false),
     [withdrawId, setWithdrawId] = useState(""),
     [withdrawReason, setWithdrawReason] = useState("");
+  function setView(value: string) {
+    updateView(value);
+    const url = new URL(location.href);
+    if (value === "images") url.searchParams.set("unit", "image-filtering");
+    else url.searchParams.delete("unit");
+    history.replaceState(null, "", url);
+  }
   async function run(label: string, fn: () => Promise<unknown>) {
     setBusy(label);
     setError("");
     setNotice("");
     try {
+      await imageRef.current?.flush();
       await draftRef.current?.flush();
       await fn();
     } catch (e) {
@@ -187,6 +199,7 @@ export default function Pilot() {
       ]);
       setCourse(c);
       setState(s);
+      if (c.code !== "ELEC270" && new URLSearchParams(location.search).get("unit") === "image-filtering") setView("home");
       setTopic(Object.keys(c.topics)[0]);
       const requested = new URLSearchParams(location.search).get("lesson");
       const latest = [...s.progress].sort((a, b) =>
@@ -261,6 +274,16 @@ export default function Pilot() {
     }
     setView("learn");
   }
+  async function imageCoursePractice() {
+    await selectTopic("convolution");
+    const nextTask = await post<Task>(p + "/tasks", {
+      topic: "convolution", phase: "practice", request_id: newId(),
+    });
+    const nextState = await refresh();
+    useTask(nextTask, nextState);
+    setView("learn");
+    requestAnimationFrame(() => document.getElementById("pilot-practice")?.scrollIntoView({ block: "start" }));
+  }
   function savedDraft(d: Draft) {
     setState((s) =>
       s
@@ -298,7 +321,7 @@ export default function Pilot() {
     if (status?.setup_required || register) await api(p+"/learning/preferences",{method:"PUT",body:JSON.stringify({language})});
     setPassword("");
     setBootstrapToken("");
-    setView("home");
+    setView(new URLSearchParams(location.search).get("unit") === "image-filtering" ? "images" : "home");
     setStatus((s) => (s ? { ...s, user: st } : s));
     await boot();
   }
@@ -538,6 +561,7 @@ export default function Pilot() {
               BookOpen,
             ],
             ["learn", tr("学习与练习"), BookOpen],
+            ...(course?.code === "ELEC270" ? [["images", language === "en" ? "Explore image processing" : "探索图像处理", Images]] : []),
             ["records", tr("我的学习记录"), ShieldCheck],
             ["sources", tr("课程资料"), FileText],
             ["settings", tr("设置与导出"), Settings],
@@ -641,6 +665,9 @@ export default function Pilot() {
             <p>{tr("课程导入完成后刷新即可开始。")}</p>
           </section>
         ) : view === "home" ? (
+          <>
+          {course.code === "ELEC270" && <ImageLearningEntry disabled={disabled}
+            onOpen={() => void run(language === "en" ? "Opening exploration" : "打开探索单元", async () => setView("images"))} />}
           <LearningOverview
             key={course.id}
             course={course}
@@ -651,6 +678,10 @@ export default function Pilot() {
             }
             onRead={() => setView("learn")}
           />
+          </>
+        ) : view === "images" && course.code === "ELEC270" ? (
+          <ImageLearning ref={imageRef} disabled={disabled}
+            onCoursePractice={() => void run(language === "en" ? "Preparing a course problem" : "准备课程练习", imageCoursePractice)} />
         ) : view === "learn" ? (
           <>
             <section className="pilot-heading">
@@ -1110,6 +1141,8 @@ export default function Pilot() {
               {tr("每个判断，都能回到一次作答")}
             </span>
             <h1>{tr("我的学习记录")}</h1>
+            {course.code === "ELEC270" && <ImageLearningEntry records disabled={disabled}
+              onOpen={() => void run(language === "en" ? "Opening exploration" : "打开探索单元", async () => setView("images"))} />}
             {course.code === "ELEC270" && <GuidedHistory />}
             <div className="pilot-stat-grid">
               {Object.entries(course.topics).map(([k, t]) => (

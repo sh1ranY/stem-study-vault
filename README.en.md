@@ -12,6 +12,8 @@ This repository contains two components: the **Skill** helps build Obsidian cour
 
 The app supports **ELEC270, COMP201 and COMP207**, selected at the top of the sidebar. Each course includes three original starter topics with diagnosis, alternative explanations, text/photo answers, bounded checks, drafts and learning records. The UI, original tasks and demo notes are available in Chinese and English.
 
+**New image-processing exploration:** choose **Explore image processing** in ELEC270 to investigate noise and detail, manipulate an image, open convolution/Euler/frequency explanations when needed, and complete bilingual practice. No private files or model key are required. See the [bilingual release notes](docs/releases/2026-10-19-image-processing.md).
+
 Install Python (3.12 recommended) and Node.js (22.12+ recommended), download the repository, and run from `apps/study-studio`:
 
 ```sh

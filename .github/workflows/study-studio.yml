@@ -47,6 +47,7 @@ jobs:
           cache: npm
           cache-dependency-path: apps/study-studio/package-lock.json
       - run: npm ci
+      - run: npm run test:images
       - run: npm run build
   container:
     runs-on: ubuntu-latest

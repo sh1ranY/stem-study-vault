@@ -79,6 +79,6 @@ def groups(owner, course):
               'route': [r for r in store.listing('route', owner) if r['id'] in keys],
               'run': [r for r in store.listing('run', owner) if r['reference'] in attempt_ids | photo_ids],
               'teaching-preference': store.listing('teaching-preference', owner)}
-    for kind in ('guided-session', 'guided-check', 'legacy-session'):
+    for kind in ('guided-session', 'guided-check', 'legacy-session', 'image-session', 'image-check'):
         result[kind] = store.listing(kind, owner) if code(course) == 'ELEC270' else []
     return result
