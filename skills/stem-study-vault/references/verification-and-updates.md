@@ -8,6 +8,8 @@
 4. **Structure and rendering:** Run the bundled wiki-link checker or an equivalent. Resolve newly introduced broken/ambiguous paths, headings and block IDs. Inspect actual Obsidian rendering when a supported UI is available; otherwise use an available Markdown/math renderer and explicitly identify that fallback. Do not claim rendered checks from regex checks. Test at least representative formulas, images, tables and callouts.
 5. **Preservation:** Compare the protected-path snapshot; confirm original source copies against their hashes. Recheck incoming links where filenames or anchors changed. Compare against the pre-existing broken-link baseline rather than claiming the entire vault was clean.
 
+For new or changed video companions, also apply [video-companions.md](video-companions.md): check the source identity, concept match, time arithmetic, start-link behavior and return link. Distinguish page access, chapter evidence, transcript evidence and actual playback. A wiki-link check or successful HTTP response cannot verify a video segment. Report unavailable or unverified intervals and keep repeated cards consistent with the existing course video map.
+
 Do not “repair” a protected note to make a checker pass. Fix the generated destination or report the conflict. Helpers are best-effort checks: their supported formats and limits are in [tools.md](tools.md).
 
 ## Useful delivery

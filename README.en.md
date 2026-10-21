@@ -30,6 +30,8 @@ Demo storage is separate and AI calls are disabled. Normal local mode can import
 
 Lessons keep required notation, conditions, data and figures at the reading location, explaining reasoning and intermediate states in connected prose. Useful source screenshots are legible, cited and interpreted beside the text. Practice develops a capability through supported attempts, independent reasoning, changed conditions and synthesis as appropriate; no fixed stage count or word quota is required. See the [original reading/practice example](skills/stem-study-vault/references/reading-and-practice-example.md).
 
+Concept-level [companion videos](skills/stem-study-vault/references/video-companions.md) add direct starting points, suggested viewing intervals, what to notice and a return to the relevant lesson. Cards identify course differences, language and verification limits. This is a Skill authoring workflow, not new video extraction in the helper or automatic synchronization with the web app.
+
 ## Optional diagnosis and ongoing adaptation
 
 Start with a few current-unit tasks or skip diagnosis and begin learning. The skill uses attempts to observe prerequisites, representation conversion, response to support, transfer/retention, self-assessment/methods, and goals/conditions/preferences. These are provisional observations, not a validated six-factor scale, ability score or fixed learning-style label.

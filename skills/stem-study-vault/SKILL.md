@@ -28,6 +28,8 @@ For existing vaults, preserve the user's layout where practical. Inventory befor
 
 For a large course, work through bounded batches while keeping a course-wide progress record. Do not replace a detailed authorized build with short summaries in order to finish all chapters in one pass. Continue until the requested scope is handled when possible; if genuinely interrupted or blocked, identify completed and unfinished batches precisely. A partially taught course remains partial even when every folder and index exists.
 
+When building or updating teaching units, provide concept-level companion videos where a suitable source can be verified, with a clickable start time, a suggested viewing interval and a return to the relevant explanation or practice. Read [video-companions.md](references/video-companions.md) for selection, timestamps, course boundaries and honest verification labels. Reuse existing mappings; record gaps without inventing links or requiring a video for every heading. This guidance applies to the requested batch, not an automatic rewrite of the whole vault.
+
 ## Keep the course useful over time
 
 On update, compare source identity and content hashes; inspect what changed before revising affected lessons, question mappings and navigation. Preserve personal annotations and stable links. Maintain a small progress record listing completed batches, source versions, unresolved gaps and next work so another session can resume without rebuilding the course. See [verification-and-updates.md](references/verification-and-updates.md).

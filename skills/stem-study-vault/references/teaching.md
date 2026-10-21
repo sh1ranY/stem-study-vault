@@ -26,6 +26,8 @@ Introduce a concept through the problem it resolves; explain its meaning in the 
 
 For an interest-led or multimedia unit, use [interest-and-applications.md](interest-and-applications.md) to connect the opening phenomenon to a prediction, observation or operation, explanation and a changed task. Provide a meaningful stopping point and a route into the common lesson, a relevant prerequisite or course practice. Engagement activities supplement the developed account; they do not replace its definitions, conditions, derivations or independent work.
 
+Place useful companion clips beside the actual concept or difficult step, following [video-companions.md](video-companions.md). Give the learner a direct starting point, what to notice and where to resume; a course-wide playlist alone does not provide this support. Keep the written explanation independently usable.
+
 For contrastive concepts, keep the comparison dimension explicit: what is chosen, what is fixed, what is optimized, and what question each model answers. Saying “A fixes income, B fixes utility” can summarize an explanation; it cannot replace the explanation of why the two experiments differ.
 
 A short recap belongs after the developed account. Do not compress an entire lecture into “key points → one worked example → one self-test” when its sources contain multiple distinct teaching units. Do not pad with repeated reassurance, rhetorical questions, unrelated analogies or statements of importance. Useful density means retaining distinct explanatory content; neither word count nor the absence of paragraph breaks measures it.
