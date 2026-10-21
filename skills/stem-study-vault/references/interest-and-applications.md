@@ -36,7 +36,7 @@ For example, Euler's formula can justify converting complex exponentials to sine
 
 ## Give media a teaching job and a reliable alternative
 
-Use a static diagram to compare states, interaction to investigate a variable, video to inspect a real process, and text or equations for precise reasoning. State what to attend to. Video needs useful timestamps and captions or a readable equivalent; an external video alone cannot supply an otherwise missing required explanation.
+Use a static diagram to compare states, interaction to investigate a variable, video to inspect a real process or follow a useful visual explanation, and text or equations for precise reasoning. State what to attend to. For concept-level video cards, direct time links, course alignment and verification, follow [video-companions.md](video-companions.md). An external video alone cannot supply an otherwise missing required explanation.
 
 Generate scientific curves, spectra, filter results and other quantitative diagrams from a defined calculation or verified construction. Independently check representative values, units, signs, conditions and limiting cases against the accompanying explanation. State relevant boundary handling, display clipping and approximations; do not pass a visual artifact off as a physical result. Generated illustrations may establish a setting, but are not numerical evidence. Preserve source/version and authored/adapted identity for text and media; rewriting or redrawing does not itself establish redistribution rights.
 
